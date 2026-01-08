@@ -1,6 +1,7 @@
 ---
 name: Bug report
 description: Report a problem or undesired behavior in Swiftx
+about: Report a problem or undesired behavior in Swiftx
 title: "[Bug]: "
 labels: ["bug"]
 assignees: []
