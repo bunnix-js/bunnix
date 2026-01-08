@@ -1,5 +1,10 @@
 # Swiftx
 
+[![Swiftx logo](images/swiftx-transparent-regular.png)](https://morissonmaciel.github.io/swiftx/)
+
+[![Tests](https://github.com/morissonmaciel/swiftx/actions/workflows/main.yml/badge.svg)](https://github.com/morissonmaciel/swiftx/actions/workflows/main.yml)
+![Node.js](https://img.shields.io/badge/node-18.x%20%7C%2020.x-339933)
+
 [Read the full documentation](https://morissonmaciel.github.io/swiftx/)
 
 Swiftx is an ultra-lightweight, functional-first UI framework with a minimal router. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.

@@ -5,6 +5,8 @@ title: Swiftx Documentation
 
 # Swiftx
 
+![Swiftx logo](./images/swiftx-transparent-regular.png)
+
 Ultra-lightweight reactive UI framework with a minimal router and keyed list rendering.
 
 ## Start Here
