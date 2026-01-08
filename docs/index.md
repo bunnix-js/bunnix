@@ -7,6 +7,10 @@ title: Swiftx Documentation
 
 Ultra-lightweight reactive UI framework with a minimal router and keyed list rendering.
 
+## Start Here
+
+- [Getting Started](./getting-started.md) - install and render your first view
+
 ## Features
 
 - ✨ Ultra-lightweight (minimal bundle size)
@@ -23,6 +27,29 @@ npm install swiftx
 
 ## Documentation
 
-- [Getting Started](./getting-started.md) - Learn how to get started with Swiftx
-- [API Reference](./api.md) - Complete API documentation
-- [Examples](./examples.md) - Code examples and use cases
+### Core Concepts
+
+- [Core Overview](./core.md) - the Swiftx mental model and API map
+- [Elements](./elements.md) - tag DSL and factory usage
+- [Rendering](./rendering.md) - `render` and mount flow
+- [State](./state.md) - `useState` and State API
+- [Effects](./effects.md) - immediate effects and cleanup
+- [Directives](./directives.md) - `Show` and `ForEach`
+- [Refs](./refs.md) - `useRef` for DOM access
+- [Lifecycle](./lifecycle.md) - `whenReady`
+- [JSX](./jsx.md) - optional JSX usage
+
+### Router
+
+- [Router Overview](./router.md)
+- [Routes](./router-routes.md)
+- [Layouts](./router-layouts.md)
+- [Navigation](./router-navigation.md)
+
+### Examples
+
+- [Examples Overview](./examples.md)
+- [Counter](./examples-counter.md)
+- [Todo List](./examples-todo.md)
+- [Router Layout](./examples-router-layout.md)
+- [Async Data](./examples-async.md)
