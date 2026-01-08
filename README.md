@@ -1,5 +1,7 @@
 # Swiftx
 
+[Read the full documentation](https://morissonmaciel.github.io/swiftx/)
+
 Swiftx is an ultra-lightweight, functional-first UI framework with a minimal router. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.
 
 ## Why Swiftx
@@ -150,6 +152,7 @@ const App = () => (
 
 ## Docs
 
+- Published documentation: https://morissonmaciel.github.io/swiftx/
 - Core framework: `src/swiftx/README.md`
 - Router: `src/swiftx-router/README.md`
 
