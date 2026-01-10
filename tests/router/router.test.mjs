@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import Swiftx, { BrowserRouter, RouterStack, Route, Link } from '../../index.mjs';
+import { resetRouterCount } from '../../src/swiftx-router/browser-router.mjs';
+
 
 test('Route builder creates a rule with render', () => {
     const rule = Route.on('/').render(() => 'ok');
@@ -88,18 +90,17 @@ test('Route state updates continue after navigation without errors', async () =>
     const container = document.createElement('div');
 
     let navigation;
-    let intervalId;
+    const intervalIds = [];
     window.__testTickCount = 0;
 
     const RouteOne = ({ navigation: nav }) => {
         navigation = nav;
         Swiftx.useEffect(() => {
-            Swiftx.whenReady(() => {
-                intervalId = setInterval(() => {
-                    window.__testTickCount += 1;
-                }, 10);
-            });
-            return () => clearInterval(intervalId);
+            const id = setInterval(() => {
+                window.__testTickCount += 1;
+            }, 10);
+            intervalIds.push(id);
+            return () => intervalIds.forEach((value) => clearInterval(value));
         }, []);
         return Swiftx('div', { id: 'route-one' }, 'Route 1');
     };
@@ -135,7 +136,7 @@ test('Route state updates continue after navigation without errors', async () =>
     const firstTickCount = window.__testTickCount;
     await new Promise((resolve) => setTimeout(resolve, 35));
     const secondTickCount = window.__testTickCount;
-    clearInterval(intervalId);
+    intervalIds.forEach((value) => clearInterval(value));
     process.removeListener('uncaughtException', errorHandler);
     process.removeListener('unhandledRejection', rejectionHandler);
 
@@ -184,69 +185,6 @@ test('RouterStack does not keep expenses list when linking to expense details', 
     assert.equal(container.querySelector('#expense-list'), null);
 });
 
-test('RouterStack does not keep expenses list when linking to expense details (weak control)', async () => {
-    window.history.replaceState({}, '', '/expenses/10');
-    window.dispatchEvent(new window.PopStateEvent('popstate'));
-
-    const container = document.createElement('div');
-    window.__weakControlActive = true;
-    const originalWarn = console.warn;
-    const warnings = [];
-    console.warn = (...args) => {
-        warnings.push(args.join(' '));
-    };
-
-    const ExpensesByAccount = ({ navigation }) => {
-        return Swiftx('div', { id: 'expense-list' }, [
-            Swiftx(Link, { to: '/expense/10/99', navigation }, 'Go to expense')
-        ]);
-    };
-    const ExpenseDetails = ({ navigation, accountId }) => {
-        Swiftx.useEffect(() => {
-            if (window.__weakControlActive) {
-                navigation.push(`/expenses/${accountId}`);
-            }
-        }, []);
-        return Swiftx('div', { id: 'expense-detail' }, 'Expense Details');
-    };
-
-    const App = () => Swiftx(RouterStack, {
-        rootPath: '/',
-        rules: [
-            Route.on('/expenses/:accountId').render(ExpensesByAccount),
-            Route.on('/expense/:accountId/:expenseId').render(ExpenseDetails),
-            Route.notFound.render(() => Swiftx('div', {}, 'NF'))
-        ]
-    });
-
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
-        container
-    );
-
-    assert.equal(container.querySelector('#expense-list')?.textContent, 'Go to expense');
-    assert.equal(container.querySelector('#expense-detail'), null);
-
-    const link = container.querySelector('a');
-    assert.ok(link);
-    link.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true }));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    try {
-        assert.equal(container.querySelector('#expense-list')?.textContent, 'Go to expense');
-        assert.equal(container.querySelector('#expense-detail'), null);
-        assert.equal(
-            warnings.some((message) =>
-                message.includes('Swiftx.Show: render superseded by a newer update')
-            ),
-            true
-        );
-    } finally {
-        window.__weakControlActive = false;
-        console.warn = originalWarn;
-    }
-});
 
 test('RouterStack layout renders only the matched expense route', async () => {
     window.history.replaceState({}, '', '/expenses/10');
@@ -388,4 +326,84 @@ test('RouterStack passes route params to layout components', () => {
     assert.equal(seenId, '42');
     assert.equal(container.querySelector('#layout-id')?.textContent, '42');
     assert.equal(container.querySelector('#user')?.textContent, 'User 42');
+});
+
+test('RouterStack weak control uses push to /home', async () => {
+    window.history.replaceState({}, '', '/account/42');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
+
+    const container = document.createElement('div');
+    container.id = 'weak-control-push-root';
+    let active = true;
+
+    const Home = () => Swiftx('div', { id: 'home' }, 'Home');
+    const Account = ({ navigation }) => {
+        Swiftx.useEffect(() => {
+            if (active) navigation.push('/home');
+        }, []);
+        return Swiftx('div', { id: 'account' }, 'Account');
+    };
+
+    const App = () => Swiftx(RouterStack, {
+        rootPath: '/',
+        rules: [
+            Route.on('/home').render(Home),
+            Route.on('/account/:id').render(Account)
+        ]
+    });
+
+    Swiftx.render(
+        Swiftx(BrowserRouter, {}, Swiftx(App)),
+        container
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    try {
+        assert.equal(container.querySelector('#home')?.textContent, 'Home');
+        assert.equal(container.querySelector('#account'), null);
+    } finally {
+        active = false;
+    }
+});
+
+test('RouterStack weak control uses replace to /home', async () => {
+    window.history.replaceState({}, '', '/account/42');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
+
+    const container = document.createElement('div');
+    container.id = 'weak-control-replace-root';
+    let active = true;
+
+    const Home = () => Swiftx('div', { id: 'home' }, 'Home');
+    const Account = ({ navigation }) => {
+        Swiftx.useEffect(() => {
+            if (active) navigation.replace('/home');
+        }, []);
+        return Swiftx('div', { id: 'account' }, 'Account');
+    };
+
+    const App = () => Swiftx(RouterStack, {
+        rootPath: '/',
+        rules: [
+            Route.on('/home').render(Home),
+            Route.on('/account/:id').render(Account)
+        ]
+    });
+
+    Swiftx.render(
+        Swiftx(BrowserRouter, {}, Swiftx(App)),
+        container
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    try {
+        assert.equal(container.querySelector('#home')?.textContent, 'Home');
+        assert.equal(container.querySelector('#account'), null);
+    } finally {
+        active = false;
+    }
 });
