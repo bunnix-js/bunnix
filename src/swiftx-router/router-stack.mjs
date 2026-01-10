@@ -128,5 +128,7 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
         }
     );
 
-    return layout ? Swiftx(layout, { routerOutlet, navigation }) : routerOutlet();
+    return layout
+        ? Swiftx(layout, { routerOutlet, navigation, ...matchedParams.get() })
+        : routerOutlet();
 };
