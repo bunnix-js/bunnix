@@ -35,7 +35,7 @@
         "src/swiftx-jsx.d.ts"
     ],
     "scripts": {
-        "test": "node --test --test-timeout=5000 --import ./tests/setup-dom.mjs"
+        "test": "node --test --import ./tests/setup-dom.mjs"
     },
     "devDependencies": {
         "jsdom": "^26.0.0"
