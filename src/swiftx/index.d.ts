@@ -9,6 +9,17 @@ export interface State<T> {
     map<R>(fn: (value: T) => R): State<R>;
 }
 
+export interface ReadonlyState<T> {
+    get(): T;
+    subscribe(callback: (value: T) => void): () => void;
+    map<R>(fn: (value: T) => R): ReadonlyState<R>;
+}
+
+export function Compute<T>(
+    deps: State<any> | Array<State<any>>,
+    compute: (...values: any[]) => T
+): ReadonlyState<T>;
+
 export type VNode = {
     tag: any;
     props: any;
@@ -21,6 +32,7 @@ export interface SwiftxFactory {
 
     useState<T>(initialValue: T): State<T>;
     useEffect(callback: (val?: any) => void | (() => void), dependencies?: any[]): void;
+    useMemo<T>(deps: State<any> | Array<State<any>>, compute: (...values: any[]) => T): ReadonlyState<T>;
     useRef<T = any>(): { current: T };
     render(component: any, container: HTMLElement | null): void;
     whenReady(callback: () => void): void;
@@ -32,6 +44,7 @@ export interface SwiftxFactory {
     ): any;
     State: typeof State;
     Effect: typeof Effect;
+    Compute: typeof Compute;
     Ref: () => { current: any };
     /** Dynamic tag factory (e.g., Swiftx.div(...)) */
     [tag: string]: any;

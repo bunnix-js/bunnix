@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { useState, useEffect } from '../../index.mjs';
+import Swiftx, { useState, useEffect, useMemo } from '../../index.mjs';
 
 test('useState get/set/subscribe works', () => {
     const state = useState(0);
@@ -37,6 +37,22 @@ test('useEffect runs immediately and on dependency change', () => {
     state.set(3);
 
     assert.deepEqual(seen, [1, 2, 3]);
+});
+
+test('useMemo computes a derived readonly state', () => {
+    const first = useState('Ada');
+    const last = useState('Lovelace');
+    const fullName = useMemo([first, last], (a, b) => `${a} ${b}`);
+
+    assert.equal(fullName.get(), 'Ada Lovelace');
+    assert.equal('set' in fullName, false);
+
+    let seen;
+    const unsubscribe = fullName.subscribe((value) => { seen = value; });
+    first.set('Grace');
+    assert.equal(fullName.get(), 'Grace Lovelace');
+    assert.equal(seen, 'Grace Lovelace');
+    unsubscribe();
 });
 
 test('factory marks function props as events for elements', () => {
