@@ -1,4 +1,6 @@
 import Swiftx from '../swiftx/index.mjs';
+import { swiftxToDOM } from '../swiftx/dom.mjs';
+import { isDev } from '../swiftx/dev.mjs';
 import { _routeState, incrementRouterCount, navigate, back } from './browser-router.mjs';
 import { Route } from './route.mjs';
 
@@ -49,8 +51,13 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
 
     incrementRouterCount();
 
-    const matchedComponent = Swiftx.useState(null);
     const matchedParams = Swiftx.useState({});
+    const outletStart = document.createComment('swiftx-router:start');
+    const outletEnd = document.createComment('swiftx-router:end');
+    const outletFragment = document.createDocumentFragment();
+    outletFragment.append(outletStart, outletEnd);
+    let pendingVdom = null;
+    let renderVersion = 0;
 
     /**
      * Scoped navigation object provided to children.
@@ -67,6 +74,44 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
         /** The root path defined for this stack. */
         rootPath
     };
+
+    /**
+     * Renders the matched component with injected params and navigation.
+     */
+    const removeBetween = () => {
+        let node = outletStart.nextSibling;
+        while (node && node !== outletEnd) {
+            const next = node.nextSibling;
+            node.remove();
+            node = next;
+        }
+    };
+
+    const flushPending = (clear = false, version = renderVersion) => {
+        if (!outletStart.parentNode) {
+            Swiftx.whenReady(() => flushPending(clear, version));
+            return;
+        }
+        if (version !== renderVersion) return;
+        if (!pendingVdom) {
+            if (clear) removeBetween();
+            return;
+        }
+        const dom = swiftxToDOM(pendingVdom);
+        if (version !== renderVersion) {
+            if (isDev()) {
+                console.warn('[DEV] Swiftx.Show: render superseded by a newer update (possible redirect inside useEffect).');
+            }
+            return;
+        }
+        removeBetween();
+        outletStart.parentNode.insertBefore(dom, outletEnd);
+        pendingVdom = null;
+    };
+
+    const routerOutlet = () => outletFragment;
+
+    Swiftx.whenReady(() => flushPending(false, renderVersion));
 
     /**
      * Iterates through rules and updates the state with the first matching result.
@@ -92,8 +137,10 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
         }
 
         if (!activeRule) {
-            matchedComponent.set(null);
             matchedParams.set({});
+            renderVersion += 1;
+            pendingVdom = null;
+            flushPending(true, renderVersion);
             return;
         }
 
@@ -107,7 +154,12 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
 
         // Handle Terminal Render
         if (activeRule.render) {
-            matchedComponent.set(activeRule.render);
+            const content = activeRule.render;
+            renderVersion += 1;
+            pendingVdom = typeof content === 'function'
+                ? Swiftx(content, { ...params, navigation })
+                : content;
+            flushPending(false, renderVersion);
         }
     };
 
@@ -115,18 +167,6 @@ export const RouterStack = (propsOrRoot, rulesArg = [], layoutArg = null) => {
     Swiftx.useEffect(() => {
         applyRules();
     }, [_routeState]);
-
-    /**
-     * Renders the matched component with injected params and navigation.
-     */
-    const routerOutlet = () => Swiftx.Show(
-        matchedComponent.map(m => !!m),
-        () => {
-            const Comp = matchedComponent.get();
-            const params = matchedParams.get();
-            return Comp ? Swiftx(Comp, { ...params, navigation }) : '';
-        }
-    );
 
     return layout
         ? Swiftx(layout, { routerOutlet, navigation, ...matchedParams.get() })
