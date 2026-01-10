@@ -1,11 +1,13 @@
 import Swiftx, {
     useState,
     useEffect,
+    useMemo,
     useRef,
     whenReady,
     render,
     Show,
-    ForEach
+    ForEach,
+    Compute
 } from './src/swiftx/index.mjs';
 import SwiftxRouter, {
     BrowserRouter,
@@ -24,9 +26,11 @@ export {
     Link,
     useState,
     useEffect,
+    useMemo,
     useRef,
     whenReady,
     render,
     Show,
-    ForEach
+    ForEach,
+    Compute
 };

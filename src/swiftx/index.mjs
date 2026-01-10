@@ -1,6 +1,6 @@
 import { Swiftx } from './factory.mjs';
 import { render } from './render.mjs';
-import { State, Effect } from './state.mjs';
+import { State, Effect, Compute } from './state.mjs';
 import { Show, ForEach } from './directives.mjs';
 
 /** @type {import('./index.d.ts').SwiftxFactory} */
@@ -9,6 +9,7 @@ const SwiftxNamespace = /** @type {any} */ (Swiftx);
 SwiftxNamespace.render = render;
 SwiftxNamespace.State = State;
 SwiftxNamespace.Effect = Effect;
+SwiftxNamespace.Compute = Compute;
 SwiftxNamespace.Show = Show;
 SwiftxNamespace.ForEach = ForEach;
 SwiftxNamespace.Ref = () => ({ current: null });
@@ -17,6 +18,7 @@ SwiftxNamespace.whenReady = (cb) => queueMicrotask(cb);
 // Attach aliases
 SwiftxNamespace.useState = State;
 SwiftxNamespace.useEffect = Effect;
+SwiftxNamespace.useMemo = Compute;
 SwiftxNamespace.useRef = SwiftxNamespace.Ref;
 
 /**
@@ -35,8 +37,9 @@ const SwiftxProxy = new Proxy(SwiftxNamespace, {
 
 export const useState = State;
 export const useEffect = Effect;
+export const useMemo = Compute;
 export const whenReady = SwiftxNamespace.whenReady;
 export const useRef = SwiftxNamespace.Ref;
 
-export { render, Show, ForEach };
+export { render, Show, ForEach, Compute };
 export default SwiftxProxy;

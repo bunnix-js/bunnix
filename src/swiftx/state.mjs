@@ -31,3 +31,24 @@ export function Effect(cb, deps) {
 
     return () => disposers.forEach(d => d?.())
 }
+
+const toReadonly = (state) => ({
+    get: () => state.get(),
+    subscribe: (cb) => state.subscribe(cb),
+    map: (fn) => toReadonly(state.map(fn))
+});
+
+export function Compute(deps, fn) {
+    const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
+    const states = rawDeps.filter(s => s && typeof s.get === 'function' && typeof s.subscribe === 'function')
+    const computeValue = () => fn(...states.map(s => s.get()))
+    const derived = State(computeValue())
+
+    const update = () => {
+        derived.set(computeValue())
+    }
+
+    states.forEach(s => s.subscribe(update))
+
+    return toReadonly(derived)
+}

@@ -39,6 +39,7 @@ test('useEffect runs immediately and on dependency change', () => {
     assert.deepEqual(seen, [1, 2, 3]);
 });
 
+
 test('factory marks function props as events for elements', () => {
     const onClick = () => {};
     const vnode = Swiftx('button', { click: onClick, title: 'x' }, 'OK');
