@@ -48,3 +48,19 @@ function Breadcrumbs({ navigation }) {
     return Swiftx('p', ['Path: ', navigation.currentPath]);
 }
 ```
+
+## Redirects in useEffect
+
+`useEffect` runs immediately. If you redirect inside an effect, the current route will not render; Swiftx will navigate straight to the destination. In dev, Swiftx logs a warning if a render is superseded by a redirect.
+
+```javascript
+import Swiftx from 'swiftx';
+
+function GuardedRoute({ navigation }) {
+    Swiftx.useEffect(() => {
+        navigation.push('/login');
+    }, []);
+
+    return Swiftx('div', 'Protected content');
+}
+```
