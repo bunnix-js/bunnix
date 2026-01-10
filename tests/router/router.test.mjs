@@ -354,3 +354,38 @@ test('RouterStack layout handles ForEach list navigation to expense details', as
     assert.equal(container.querySelector('#expense-detail')?.textContent, 'Expense 2');
     assert.equal(container.querySelector('#expense-list'), null);
 });
+
+test('RouterStack passes route params to layout components', () => {
+    window.history.replaceState({}, '', '/user/42');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
+
+    const container = document.createElement('div');
+    let seenId;
+
+    const Layout = ({ routerOutlet, id }) => {
+        seenId = id;
+        return Swiftx('div', { id: 'layout' }, [
+            Swiftx('span', { id: 'layout-id' }, id || 'none'),
+            routerOutlet()
+        ]);
+    };
+
+    const User = ({ id }) => Swiftx('div', { id: 'user' }, `User ${id}`);
+
+    const App = () => Swiftx(RouterStack, {
+        rootPath: '/',
+        rules: [
+            Route.on('/user/:id').render(User)
+        ],
+        layout: Layout
+    });
+
+    Swiftx.render(
+        Swiftx(BrowserRouter, {}, Swiftx(App)),
+        container
+    );
+
+    assert.equal(seenId, '42');
+    assert.equal(container.querySelector('#layout-id')?.textContent, '42');
+    assert.equal(container.querySelector('#user')?.textContent, 'User 42');
+});
