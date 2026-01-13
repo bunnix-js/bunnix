@@ -8,15 +8,15 @@ title: Example - Todo List
 This example combines state, refs, `Show`, and keyed list updates.
 
 ```javascript
-import Swiftx, { Show } from 'swiftx';
+import Bunnix, { Show } from '@bunnix/core';
 
-const todos = Swiftx.useState([
+const todos = Bunnix.useState([
     { id: 1, title: 'Buy milk', done: false },
     { id: 2, title: 'Write docs', done: true }
 ]);
 const isEmpty = todos.map((list) => list.length === 0);
 
-const inputRef = Swiftx.useRef();
+const inputRef = Bunnix.useRef();
 
 const addTodo = () => {
     const value = inputRef.current.value.trim();
@@ -35,21 +35,21 @@ const toggleTodo = (id) => {
 };
 
 const TodoApp = () => (
-    Swiftx('div', { class: 'todo' }, [
-        Swiftx('h1', 'Todos'),
-        Swiftx('div', [
-            Swiftx('input', { ref: inputRef, type: 'text', placeholder: 'New todo' }),
-            Swiftx('button', { click: addTodo }, 'Add')
+    Bunnix('div', { class: 'todo' }, [
+        Bunnix('h1', 'Todos'),
+        Bunnix('div', [
+            Bunnix('input', { ref: inputRef, type: 'text', placeholder: 'New todo' }),
+            Bunnix('button', { click: addTodo }, 'Add')
         ]),
         Show(
             isEmpty,
-            Swiftx('p', 'Nothing here yet')
+            Bunnix('p', 'Nothing here yet')
         ),
-        Swiftx('ul', [
-            Swiftx.ForEach(todos, 'id', (todo) =>
-                Swiftx('li', [
-                    Swiftx('label', [
-                        Swiftx('input', {
+        Bunnix('ul', [
+            Bunnix.ForEach(todos, 'id', (todo) =>
+                Bunnix('li', [
+                    Bunnix('label', [
+                        Bunnix('input', {
                             type: 'checkbox',
                             checked: todo.done,
                             click: () => toggleTodo(todo.id)
@@ -62,7 +62,7 @@ const TodoApp = () => (
     ])
 );
 
-Swiftx.render(
+Bunnix.render(
     TodoApp,
     document.getElementById('root')
 );

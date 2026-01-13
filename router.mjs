@@ -5,5 +5,5 @@ export {
     RoutePolicy,
     Route,
     Link,
-    SwiftxRouter
-} from './src/swiftx-router/index.mjs';
+    BunnixRouter
+} from './src/bunnix-router/index.mjs';

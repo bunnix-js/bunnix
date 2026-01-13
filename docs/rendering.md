@@ -5,15 +5,15 @@ title: Rendering
 
 # Rendering
 
-Use `Swiftx.render` to mount your root component or VDOM into a container element.
+Use `Bunnix.render` to mount your root component or VDOM into a container element.
 
 ## Render a Component
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 import App from './App.js';
 
-Swiftx.render(
+Bunnix.render(
     App,
     document.getElementById('root')
 );
@@ -22,11 +22,11 @@ Swiftx.render(
 ## Render VDOM Directly
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const view = Swiftx('h1', 'Hello');
+const view = Bunnix('h1', 'Hello');
 
-Swiftx.render(
+Bunnix.render(
     view,
     document.getElementById('root')
 );

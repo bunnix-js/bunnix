@@ -1,5 +1,5 @@
 /**
- * Swiftx Core Type Definitions
+ * Bunnix Core Type Definitions
  */
 
 export interface State<T> {
@@ -27,9 +27,9 @@ export type VNode = {
     children: any[];
 };
 
-import type SwiftxRouter from '../swiftx-router/index';
+import type BunnixRouter from '../bunnix-router/index';
 
-export interface SwiftxFactory {
+export interface BunnixFactory {
     (tag: any, propsOrChildren?: any, ...children: any[]): VNode;
 
     useState<T>(initialValue: T): State<T>;
@@ -48,10 +48,10 @@ export interface SwiftxFactory {
     Effect: typeof Effect;
     Compute: typeof Compute;
     Ref: () => { current: any };
-    Router: typeof SwiftxRouter;
-    /** Dynamic tag factory (e.g., Swiftx.div(...)) */
+    Router: typeof BunnixRouter;
+    /** Dynamic tag factory (e.g., Bunnix.div(...)) */
     [tag: string]: any;
 }
 
-declare const Swiftx: SwiftxFactory;
-export default Swiftx;
+declare const Bunnix: BunnixFactory;
+export default Bunnix;

@@ -10,14 +10,14 @@ title: State
 ## Basic State
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const count = Swiftx.useState(0);
+const count = Bunnix.useState(0);
 
 const Counter = () => (
-    Swiftx('div', [
-        Swiftx('p', ['Count: ', count]),
-        Swiftx('button', { click: () => count.set(count.get() + 1) }, 'Increment')
+    Bunnix('div', [
+        Bunnix('p', ['Count: ', count]),
+        Bunnix('button', { click: () => count.set(count.get() + 1) }, 'Increment')
     ])
 );
 ```
@@ -25,11 +25,11 @@ const Counter = () => (
 ## Derived State with map
 
 ```javascript
-const count = Swiftx.useState(2);
+const count = Bunnix.useState(2);
 const doubled = count.map((value) => value * 2);
 
 const View = () => (
-    Swiftx('p', ['Double: ', doubled])
+    Bunnix('p', ['Double: ', doubled])
 );
 ```
 
@@ -38,7 +38,7 @@ const View = () => (
 Use `subscribe` for side effects or interop when you need to observe changes.
 
 ```javascript
-const count = Swiftx.useState(0);
+const count = Bunnix.useState(0);
 
 const unsubscribe = count.subscribe((value) => {
     console.log('Count changed:', value);
@@ -49,17 +49,17 @@ const unsubscribe = count.subscribe((value) => {
 
 ## Computed State (Compute / useMemo)
 
-Use `Swiftx.Compute` (or `useMemo`) to derive a read-only state atom from one or more states.
+Use `Bunnix.Compute` (or `useMemo`) to derive a read-only state atom from one or more states.
 
 ```javascript
-const first = Swiftx.useState('Ada');
-const last = Swiftx.useState('Lovelace');
+const first = Bunnix.useState('Ada');
+const last = Bunnix.useState('Lovelace');
 
-const fullName = Swiftx.Compute([first, last], (a, b) => `${a} ${b}`);
-// or: const fullName = Swiftx.useMemo([first, last], (a, b) => `${a} ${b}`);
+const fullName = Bunnix.Compute([first, last], (a, b) => `${a} ${b}`);
+// or: const fullName = Bunnix.useMemo([first, last], (a, b) => `${a} ${b}`);
 
 const View = () => (
-    Swiftx('p', ['Name: ', fullName])
+    Bunnix('p', ['Name: ', fullName])
 );
 ```
 
@@ -68,17 +68,17 @@ const View = () => (
 You can pass state atoms directly to element props to keep the DOM in sync.
 
 ```javascript
-const name = Swiftx.useState('');
+const name = Bunnix.useState('');
 const disabled = name.map((value) => !value);
 
 const Form = () => (
-    Swiftx('form', [
-        Swiftx('input', {
+    Bunnix('form', [
+        Bunnix('input', {
             type: 'text',
             value: name,
             change: (event) => name.set(event.target.value)
         }),
-        Swiftx('button', { disabled }, 'Save')
+        Bunnix('button', { disabled }, 'Save')
     ])
 );
 ```

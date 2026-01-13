@@ -11,12 +11,12 @@ This guide covers the current, recommended API.
 ## Basic Setup
 
 ```javascript
-import Swiftx from 'swiftx';
-import { BrowserRouter } from 'swiftx/router';
+import Bunnix from '@bunnix/core';
+import { BrowserRouter } from '@bunnix/core/router';
 import App from './App.js';
 
-Swiftx.render(
-  Swiftx(BrowserRouter, {}, Swiftx(App)),
+Bunnix.render(
+  Bunnix(BrowserRouter, {}, Bunnix(App)),
   document.getElementById('root')
 );
 ```
@@ -24,7 +24,7 @@ Swiftx.render(
 ## Defining Routes
 
 ```javascript
-import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
+import { RouterRoot, RouteGroup, Route } from '@bunnix/core/router';
 
 const App = () => RouterRoot(
   RouteGroup.root([
@@ -40,7 +40,7 @@ const App = () => RouterRoot(
 ## Policies
 
 ```javascript
-import { RoutePolicy } from 'swiftx/router';
+import { RoutePolicy } from '@bunnix/core/router';
 
 RouteGroup('/account', [
   Route('/account', Account)

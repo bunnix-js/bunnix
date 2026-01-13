@@ -53,8 +53,8 @@ export const Route = (path, component = null) => {
     return createRoute(path, component);
 };
 
-Route._NOT_FOUND = '__swiftx_not_found__';
-Route._FORBIDDEN = '__swiftx_forbidden__';
+Route._NOT_FOUND = '__bunnix_not_found__';
+Route._FORBIDDEN = '__bunnix_forbidden__';
 
 Route.root = (component = null) => createRoute('/', component);
 

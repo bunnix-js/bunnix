@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { useState, useEffect } from '../../index.mjs';
+import Bunnix, { useState, useEffect } from '../../index.mjs';
 
 test('useState get/set/subscribe works', () => {
     const state = useState(0);
@@ -42,7 +42,7 @@ test('useEffect runs immediately and on dependency change', () => {
 
 test('factory marks function props as events for elements', () => {
     const onClick = () => {};
-    const vnode = Swiftx('button', { click: onClick, title: 'x' }, 'OK');
+    const vnode = Bunnix('button', { click: onClick, title: 'x' }, 'OK');
 
     assert.equal(vnode.events.click, onClick);
     assert.equal(vnode.props.title, 'x');
@@ -51,7 +51,7 @@ test('factory marks function props as events for elements', () => {
 test('factory passes function props through for components', () => {
     const onClick = () => {};
     const Comp = () => 'ok';
-    const vnode = Swiftx(Comp, { click: onClick });
+    const vnode = Bunnix(Comp, { click: onClick });
 
     assert.equal(vnode.props.click, onClick);
     assert.equal(vnode.events.click, undefined);

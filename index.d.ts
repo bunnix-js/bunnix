@@ -1,8 +1,8 @@
-/// <reference path="./src/swiftx-jsx.d.ts" />
+/// <reference path="./src/bunnix-jsx.d.ts" />
 
-export { default } from './src/swiftx/index';
-export { default as Swiftx } from './src/swiftx/index';
-export * from './src/swiftx/index';
+export { default } from './src/bunnix/index';
+export { default as Bunnix } from './src/bunnix/index';
+export * from './src/bunnix/index';
 
-export { default as SwiftxRouter } from './src/swiftx-router/index';
-export * from './src/swiftx-router/index';
+export { default as BunnixRouter } from './src/bunnix-router/index';
+export * from './src/bunnix-router/index';

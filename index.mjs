@@ -1,4 +1,4 @@
-import Swiftx, {
+import Bunnix, {
     useState,
     useEffect,
     useMemo,
@@ -8,8 +8,8 @@ import Swiftx, {
     Show,
     ForEach,
     Compute
-} from './src/swiftx/index.mjs';
-import SwiftxRouter, {
+} from './src/bunnix/index.mjs';
+import BunnixRouter, {
     BrowserRouter,
     RouterRoot,
     RouteGroup,
@@ -17,14 +17,14 @@ import SwiftxRouter, {
     Route,
     Link,
     useRouterContext
-} from './src/swiftx-router/index.mjs';
+} from './src/bunnix-router/index.mjs';
 
-Swiftx.Router = SwiftxRouter;
+Bunnix.Router = BunnixRouter;
 
-export default Swiftx;
+export default Bunnix;
 export {
-    Swiftx,
-    SwiftxRouter,
+    Bunnix,
+    BunnixRouter,
     BrowserRouter,
     RouterRoot,
     RouteGroup,

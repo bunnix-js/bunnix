@@ -1,6 +1,6 @@
-import Swiftx from '../swiftx/index.mjs';
-import { swiftxToDOM } from '../swiftx/dom.mjs';
-import { isDev } from '../swiftx/dev.mjs';
+import Bunnix from '../bunnix/index.mjs';
+import { bunnixToDOM } from '../bunnix/dom.mjs';
+import { isDev } from '../bunnix/dev.mjs';
 import { _routeState, incrementRouterCount, navigate, back } from './browser-router.mjs';
 import { Route } from './route.mjs';
 import { RouteGroup } from './route-group.mjs';
@@ -188,11 +188,11 @@ export const RouterRoot = (...args) => {
 
     incrementRouterCount();
 
-    const matchedParams = Swiftx.useState({});
-    const groupRootPath = Swiftx.useState(entries[0]?.group?.rootPath || '/');
+    const matchedParams = Bunnix.useState({});
+    const groupRootPath = Bunnix.useState(entries[0]?.group?.rootPath || '/');
 
-    const rootStart = document.createComment('swiftx-router-root:start');
-    const rootEnd = document.createComment('swiftx-router-root:end');
+    const rootStart = document.createComment('bunnix-router-root:start');
+    const rootEnd = document.createComment('bunnix-router-root:end');
     const rootFragment = document.createDocumentFragment();
     rootFragment.append(rootStart, rootEnd);
 
@@ -262,7 +262,7 @@ export const RouterRoot = (...args) => {
                 renderVersion += 1;
                 const content = forbiddenRouteDef.component ?? forbiddenRouteDef.render ?? null;
                 pendingVdom = typeof content === 'function'
-                    ? Swiftx(content, { navigation, context: resolvedContext })
+                    ? Bunnix(content, { navigation, context: resolvedContext })
                     : content;
                 flushPending(false, renderVersion);
             }
@@ -302,7 +302,7 @@ export const RouterRoot = (...args) => {
 
     const setLayout = (layout, params) => {
         if (!rootStart.parentNode) {
-            Swiftx.whenReady(() => setLayout(layout, params));
+            Bunnix.whenReady(() => setLayout(layout, params));
             return;
         }
         if (!layout) {
@@ -313,13 +313,13 @@ export const RouterRoot = (...args) => {
         }
 
         const outletFragment = document.createDocumentFragment();
-        outletStart = document.createComment('swiftx-router-root:outlet-start');
-        outletEnd = document.createComment('swiftx-router-root:outlet-end');
+        outletStart = document.createComment('bunnix-router-root:outlet-start');
+        outletEnd = document.createComment('bunnix-router-root:outlet-end');
         outletFragment.append(outletStart, outletEnd);
 
         const routerOutlet = () => outletFragment;
-        const layoutVdom = Swiftx(layout, { routerOutlet, navigation, context: resolvedContext, ...params });
-        const layoutDom = swiftxToDOM(layoutVdom);
+        const layoutVdom = Bunnix(layout, { routerOutlet, navigation, context: resolvedContext, ...params });
+        const layoutDom = bunnixToDOM(layoutVdom);
 
         removeBetween(rootStart, rootEnd);
         rootStart.parentNode.insertBefore(layoutDom, rootEnd);
@@ -327,7 +327,7 @@ export const RouterRoot = (...args) => {
 
     const flushPending = (clear = false, version = renderVersion) => {
         if (!rootStart.parentNode) {
-            Swiftx.whenReady(() => flushPending(clear, version));
+            Bunnix.whenReady(() => flushPending(clear, version));
             return;
         }
         if (version !== renderVersion) return;
@@ -335,10 +335,10 @@ export const RouterRoot = (...args) => {
             if (clear) removeBetween(outletStart, outletEnd);
             return;
         }
-        const dom = swiftxToDOM(pendingVdom);
+        const dom = bunnixToDOM(pendingVdom);
         if (version !== renderVersion) {
             if (isDev()) {
-                console.warn('[DEV] Swiftx.Show: render superseded by a newer update (possible redirect inside useEffect).');
+                console.warn('[DEV] Bunnix.Show: render superseded by a newer update (possible redirect inside useEffect).');
             }
             return;
         }
@@ -471,14 +471,14 @@ export const RouterRoot = (...args) => {
         const content = route.component ?? route.render ?? null;
         renderVersion += 1;
         pendingVdom = typeof content === 'function'
-            ? Swiftx(content, { ...params, navigation, context: resolvedContext })
+            ? Bunnix(content, { ...params, navigation, context: resolvedContext })
             : content;
         flushPending(false, renderVersion);
     };
 
-    Swiftx.whenReady(() => flushPending(false, renderVersion));
+    Bunnix.whenReady(() => flushPending(false, renderVersion));
 
-    Swiftx.useEffect(() => {
+    Bunnix.useEffect(() => {
         applyMatch();
     }, [_routeState]);
 

@@ -9,7 +9,7 @@ import { Link } from './link.mjs';
 export const useRouterContext = RouterRoot.Context;
 export { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route, Link };
 
-export const SwiftxRouter = {
+export const BunnixRouter = {
     BrowserRouter,
     RouterRoot,
     RouteGroup,
@@ -19,7 +19,7 @@ export const SwiftxRouter = {
     useRouterContext
 };
 
-const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
+const BunnixRouterProxy = new Proxy(BunnixRouter, {
     get(target, prop) {
         if (prop in target) return target[prop];
         if (typeof prop === 'string') {
@@ -42,6 +42,6 @@ const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
     }
 });
 
-export { SwiftxRouterProxy as Router };
+export { BunnixRouterProxy as Router };
 
-export default SwiftxRouterProxy;
+export default BunnixRouterProxy;

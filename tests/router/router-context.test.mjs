@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, useRouterContext } from '../../index.mjs';
+import Bunnix, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, useRouterContext } from '../../index.mjs';
 
 test('RouterRoot.Context merges defaults and app context', () => {
     const context = RouterRoot.Context({ user: 'ada' });
@@ -46,15 +46,15 @@ test('RoutePolicy receives context and cookies', () => {
     });
 
     const Home = ({ context }) => (
-        Swiftx('div', {}, `${context.policyRan}-${context.cookies.get('token')}`)
+        Bunnix('div', {}, `${context.policyRan}-${context.cookies.get('token')}`)
     );
 
     const App = () => RouterRoot(
         RouteGroup.root(Home, [policy])
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 

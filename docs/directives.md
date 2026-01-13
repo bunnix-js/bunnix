@@ -5,21 +5,21 @@ title: Directives
 
 # Directives
 
-Swiftx provides two rendering directives: `Show` and `ForEach`.
+Bunnix provides two rendering directives: `Show` and `ForEach`.
 
 ## Show
 
 Use `Show` for conditional rendering. Pass a function to avoid evaluating heavy content while hidden.
 
 ```javascript
-import Swiftx, { Show } from 'swiftx';
+import Bunnix, { Show } from '@bunnix/core';
 
-const isVisible = Swiftx.useState(false);
+const isVisible = Bunnix.useState(false);
 
 const Panel = () => (
-    Swiftx('div', [
-        Show(isVisible, () => Swiftx('p', 'Visible')),
-        Swiftx('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
+    Bunnix('div', [
+        Show(isVisible, () => Bunnix('p', 'Visible')),
+        Bunnix('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
     ])
 );
 ```
@@ -29,23 +29,23 @@ const Panel = () => (
 `ForEach` renders a list and updates by key. You can pass the key as a string or an options object.
 
 ```javascript
-const items = Swiftx.useState([
+const items = Bunnix.useState([
     { id: 1, label: 'Rent' },
     { id: 2, label: 'Food' }
 ]);
 
 const List = () => (
-    Swiftx('ul', [
-        Swiftx.ForEach(items, 'id', (item) =>
-            Swiftx('li', item.label)
+    Bunnix('ul', [
+        Bunnix.ForEach(items, 'id', (item) =>
+            Bunnix('li', item.label)
         )
     ])
 );
 ```
 
 ```javascript
-Swiftx.ForEach(items, { key: 'id' }, (item, index) =>
-    Swiftx('li', `${index + 1}. ${item.label}`)
+Bunnix.ForEach(items, { key: 'id' }, (item, index) =>
+    Bunnix('li', `${index + 1}. ${item.label}`)
 );
 ```
 
@@ -54,7 +54,7 @@ Swiftx.ForEach(items, { key: 'id' }, (item, index) =>
 You can bind input fields to items in a collection and derive form state.
 
 ```javascript
-const users = Swiftx.useState([
+const users = Bunnix.useState([
     { id: 1, name: '' },
     { id: 2, name: '' }
 ]);
@@ -63,10 +63,10 @@ const disabled = users.map((list) =>
 );
 
 const Form = () => (
-    Swiftx('form', [
-        Swiftx('div', [
-            Swiftx.ForEach(users, 'id', (user, index) =>
-                Swiftx('input', {
+    Bunnix('form', [
+        Bunnix('div', [
+            Bunnix.ForEach(users, 'id', (user, index) =>
+                Bunnix('input', {
                     type: 'text',
                     value: user.name,
                     change: (event) => {
@@ -78,7 +78,7 @@ const Form = () => (
                 })
             )
         ]),
-        Swiftx('button', { type: 'submit', disabled }, 'Submit')
+        Bunnix('button', { type: 'submit', disabled }, 'Submit')
     ])
 );
 ```

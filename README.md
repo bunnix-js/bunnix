@@ -1,15 +1,15 @@
-# Swiftx
+# Bunnix
 
-[![Swiftx logo](images/swiftx-transparent-regular.png)](https://morissonmaciel.github.io/swiftx/)
+[![Bunnix logo](images/bunnix-transparent-regular.png)](https://bunnix-js.github.io/bunnix/)
 
-[![Tests](https://github.com/morissonmaciel/swiftx/actions/workflows/main.yml/badge.svg)](https://github.com/morissonmaciel/swiftx/actions/workflows/main.yml)
+[![Tests](https://github.com/bunnix-js/bunnix/actions/workflows/main.yml/badge.svg)](https://github.com/bunnix-js/bunnix/actions/workflows/main.yml)
 ![Node.js](https://img.shields.io/badge/node-18.x%20%7C%2020.x-339933)
 
-[Read the full documentation](https://morissonmaciel.github.io/swiftx/)
+[Read the full documentation](https://bunnix-js.github.io/bunnix/)
 
-Swiftx is an ultra-lightweight, functional-first UI framework with a minimal router. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.
+Bunnix is an ultra-lightweight, functional-first UI framework with a minimal router. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.
 
-## Why Swiftx
+## Why Bunnix
 
 - **Functional elements**: build UI with plain functions or a Proxy-based tag DSL.
 - **Reactive state**: `useState` atoms update the DOM with minimal overhead.
@@ -21,14 +21,14 @@ Swiftx is an ultra-lightweight, functional-first UI framework with a minimal rou
 ## Install
 
 ```bash
-npm install swiftx
+npm install @bunnix/core
 ```
 
 ## Quick Start
 
 ```js
-import Swiftx, { BrowserRouter } from 'swiftx';
-import { RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
+import Bunnix, { BrowserRouter } from '@bunnix/core';
+import { RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
 
 const Home = () => (
     <div>
@@ -49,7 +49,7 @@ const App = () => (
     </RouterRoot>
 );
 
-Swiftx.render(
+Bunnix.render(
     <BrowserRouter>
         <App />
     </BrowserRouter>,
@@ -63,12 +63,12 @@ Swiftx.render(
 Use the tag DSL for concise markup, or the factory for explicit control.
 
 ```js
-import Swiftx from 'swiftx';
-const { div, h1, p, button } = Swiftx;
+import Bunnix from '@bunnix/core';
+const { div, h1, p, button } = Bunnix;
 
 const View = () => (
     div({ class: 'panel' }, [
-        h1('Hello Swiftx'),
+        h1('Hello Bunnix'),
         p('A tiny functional-first UI framework.'),
         button({ click: () => alert('Clicked!') }, 'Click')
     ])
@@ -78,18 +78,18 @@ const View = () => (
 ### State and Effects
 
 ```js
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const count = Swiftx.useState(0);
+const count = Bunnix.useState(0);
 
 const Counter = () => (
-    Swiftx('div', [
-        Swiftx('p', ['Count: ', count]),
-        Swiftx('button', { click: () => count.set(count.get() + 1) }, 'Increment')
+    Bunnix('div', [
+        Bunnix('p', ['Count: ', count]),
+        Bunnix('button', { click: () => count.set(count.get() + 1) }, 'Increment')
     ])
 );
 
-Swiftx.useEffect(() => {
+Bunnix.useEffect(() => {
     console.log('Effect runs immediately on call');
 }, []);
 ```
@@ -97,17 +97,17 @@ Swiftx.useEffect(() => {
 ### Keyed List Updates
 
 ```js
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const expenses = Swiftx.useState([
+const expenses = Bunnix.useState([
     { id: 1, label: 'Rent' },
     { id: 2, label: 'Food' }
 ]);
 
 const ExpenseList = () => (
-    Swiftx('ul', [
-        Swiftx.ForEach(expenses, 'id', (item) =>
-            Swiftx('li', item.label)
+    Bunnix('ul', [
+        Bunnix.ForEach(expenses, 'id', (item) =>
+            Bunnix('li', item.label)
         )
     ])
 );
@@ -116,24 +116,24 @@ const ExpenseList = () => (
 ### Conditional Rendering
 
 ```js
-import Swiftx, { Show } from 'swiftx';
-const isVisible = Swiftx.useState(false);
+import Bunnix, { Show } from '@bunnix/core';
+const isVisible = Bunnix.useState(false);
 
 const Panel = () => (
-    Swiftx('div', [
-        Show(isVisible, () => Swiftx('p', 'Now you see me')),
-        Swiftx('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
+    Bunnix('div', [
+        Show(isVisible, () => Bunnix('p', 'Now you see me')),
+        Bunnix('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
     ])
 );
 ```
 
 ## Router Overview
 
-Swiftx Router is scoped and context-aware. You define routes with groups and policies and receive a `navigation` object in matched components or layouts.
+Bunnix Router is scoped and context-aware. You define routes with groups and policies and receive a `navigation` object in matched components or layouts.
 
 ```js
-import Swiftx from 'swiftx';
-import { RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
+import Bunnix from '@bunnix/core';
+import { RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>
@@ -148,17 +148,17 @@ const App = () => (
 
 ## API Highlights
 
-- `Swiftx(tag, props, children)` or `Swiftx.[tag](props, children)`
-- `Swiftx.useState(initial)`, `Swiftx.useEffect(cb, deps)`, `Swiftx.useRef()`
-- `Swiftx.whenReady(cb)`, `Swiftx.render(vdom, container)`
-- `Show(state, content)`, `Swiftx.ForEach(state, key, render)`
+- `Bunnix(tag, props, children)` or `Bunnix.[tag](props, children)`
+- `Bunnix.useState(initial)`, `Bunnix.useEffect(cb, deps)`, `Bunnix.useRef()`
+- `Bunnix.whenReady(cb)`, `Bunnix.render(vdom, container)`
+- `Show(state, content)`, `Bunnix.ForEach(state, key, render)`
 - Router: `BrowserRouter`, `RouterRoot`, `RouteGroup`, `RoutePolicy`, `Route`, `Link`
 
 ## Docs
 
-- Published documentation: https://morissonmaciel.github.io/swiftx/
-- Core framework: `src/swiftx/README.md`
-- Router: `src/swiftx-router/README.md`
+- Published documentation: https://bunnix-js.github.io/bunnix/
+- Core framework: `src/bunnix/README.md`
+- Router: `src/bunnix-router/README.md`
 
 ## License
 

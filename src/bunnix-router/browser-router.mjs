@@ -1,11 +1,11 @@
-import Swiftx from '../swiftx/index.mjs';
-import { isDev } from '../swiftx/dev.mjs';
+import Bunnix from '../bunnix/index.mjs';
+import { isDev } from '../bunnix/dev.mjs';
 import { Route } from './route.mjs';
 
 /**
  * Reactive state containing the current window location path.
  */
-export const _routeState = Swiftx.State({ path: window.location.pathname });
+export const _routeState = Bunnix.State({ path: window.location.pathname });
 
 /**
  * Global counter used to validate that a RouterRoot is present within a BrowserRouter.
@@ -106,13 +106,13 @@ export const BrowserRouter = (props, children) => {
 
     let content = props?.children ?? (children && children.length ? children : props);
     if (Array.isArray(content)) {
-        content = content.length === 1 ? content[0] : Swiftx('div', {}, content);
+        content = content.length === 1 ? content[0] : Bunnix('div', {}, content);
     }
-    const resolved = typeof content === 'function' ? Swiftx(content) : content;
+    const resolved = typeof content === 'function' ? Bunnix(content) : content;
 
-    Swiftx.whenReady(() => {
+    Bunnix.whenReady(() => {
         if (_routerRootCount === 0 && isDev()) {
-            console.error("Swiftx.BrowserRouter: No RouterRoot found inside the Router tree. Please add a RouterRoot.");
+            console.error("Bunnix.BrowserRouter: No RouterRoot found inside the Router tree. Please add a RouterRoot.");
         }
     });
 

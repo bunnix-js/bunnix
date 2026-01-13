@@ -10,16 +10,16 @@ Layouts let you wrap routes with persistent UI such as headers or sidebars. Layo
 ## Layout Example
 
 ```javascript
-import Swiftx, { Link } from 'swiftx';
+import Bunnix, { Link } from '@bunnix/core';
 
 function AppLayout({ routerOutlet, navigation, accountId }) {
-    return Swiftx('div', { class: 'layout' }, [
-        Swiftx('header', ['Account: ', accountId]),
-        Swiftx('nav', [
+    return Bunnix('div', { class: 'layout' }, [
+        Bunnix('header', ['Account: ', accountId]),
+        Bunnix('nav', [
             Link({ to: '/', navigation }, 'Home'),
             Link({ to: '/settings', navigation }, 'Settings')
         ]),
-        Swiftx('main', [
+        Bunnix('main', [
             routerOutlet()
         ])
     ]);
@@ -29,7 +29,7 @@ function AppLayout({ routerOutlet, navigation, accountId }) {
 ## Attach a Layout
 
 ```javascript
-import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
+import { RouterRoot, RouteGroup, Route } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>

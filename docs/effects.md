@@ -10,9 +10,9 @@ title: Effects
 ## Basic Effect
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-Swiftx.useEffect(() => {
+Bunnix.useEffect(() => {
     console.log('Runs immediately');
 }, []);
 ```
@@ -20,9 +20,9 @@ Swiftx.useEffect(() => {
 ## Dependent Effect
 
 ```javascript
-const name = Swiftx.useState('Ada');
+const name = Bunnix.useState('Ada');
 
-Swiftx.useEffect((value) => {
+Bunnix.useEffect((value) => {
     console.log('Name changed:', value);
 }, [name]);
 ```
@@ -30,9 +30,9 @@ Swiftx.useEffect((value) => {
 ## Cleanup
 
 ```javascript
-const timer = Swiftx.useState(0);
+const timer = Bunnix.useState(0);
 
-Swiftx.useEffect(() => {
+Bunnix.useEffect(() => {
     const id = setInterval(() => timer.set(timer.get() + 1), 1000);
     return () => clearInterval(id);
 }, []);

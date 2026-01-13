@@ -8,14 +8,14 @@ title: Refs
 `useRef` returns a stable `{ current }` object for DOM access and imperative APIs.
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const inputRef = Swiftx.useRef();
+const inputRef = Bunnix.useRef();
 
 const FocusView = () => (
-    Swiftx('div', [
-        Swiftx('input', { ref: inputRef, type: 'text' }),
-        Swiftx('button', { click: () => inputRef.current.focus() }, 'Focus Input')
+    Bunnix('div', [
+        Bunnix('input', { ref: inputRef, type: 'text' }),
+        Bunnix('button', { click: () => inputRef.current.focus() }, 'Focus Input')
     ])
 );
 ```

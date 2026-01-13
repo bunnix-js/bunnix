@@ -1,11 +1,11 @@
-import { swiftxToDOM } from './dom.mjs';
+import { bunnixToDOM } from './dom.mjs';
 import { isDev } from './dev.mjs';
 
 /**
  * Conditional rendering
  */
 export function Show(state, vdom) {
-    const anchor = document.createComment('swiftx-show')
+    const anchor = document.createComment('bunnix-show')
     let el = null
     let renderToken = 0
 
@@ -14,10 +14,10 @@ export function Show(state, vdom) {
         if (visible) {
             if (el) el.remove();
             const content = typeof vdom === 'function' ? vdom() : vdom;
-            const nextEl = swiftxToDOM(content)
+            const nextEl = bunnixToDOM(content)
             if (token !== renderToken) {
                 if (isDev()) {
-                    console.warn('[DEV] Swiftx.Show: render superseded by a newer update (possible redirect inside useEffect).');
+                    console.warn('[DEV] Bunnix.Show: render superseded by a newer update (possible redirect inside useEffect).');
                 }
                 return;
             }
@@ -34,13 +34,13 @@ export function Show(state, vdom) {
     if (state.get()) {
         const token = ++renderToken
         const content = typeof vdom === 'function' ? vdom() : vdom;
-        const nextEl = swiftxToDOM(content)
+        const nextEl = bunnixToDOM(content)
         if (token === renderToken) {
             el = nextEl
             frag.append(el)
         } else {
             if (isDev()) {
-                console.warn('[DEV] Swiftx.Show: render superseded by a newer update (possible redirect inside useEffect).');
+                console.warn('[DEV] Bunnix.Show: render superseded by a newer update (possible redirect inside useEffect).');
             }
         }
     }
@@ -52,7 +52,7 @@ export function Show(state, vdom) {
  * Keyed list rendering with minimal diffing.
  */
 export function ForEach(itemsState, keyOrOptions, render) {
-    const anchor = document.createComment('swiftx-foreach');
+    const anchor = document.createComment('bunnix-foreach');
     const keyPath = typeof keyOrOptions === 'string'
         ? keyOrOptions
         : keyOrOptions?.key;
@@ -65,7 +65,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
     const entries = new Map();
 
     const warnMissingKey = (index) => {
-        console.warn(`Swiftx.ForEach: missing key for item at index ${index}, falling back to index.`);
+        console.warn(`Bunnix.ForEach: missing key for item at index ${index}, falling back to index.`);
     };
 
     const resolveKey = (item, index) => {
@@ -94,10 +94,10 @@ export function ForEach(itemsState, keyOrOptions, render) {
     };
 
     const createEntry = (item, index, key) => {
-        const start = document.createComment('swiftx-foreach:start');
-        const end = document.createComment('swiftx-foreach:end');
+        const start = document.createComment('bunnix-foreach:start');
+        const end = document.createComment('bunnix-foreach:end');
         const content = typeof render === 'function' ? render(item, index) : render;
-        const dom = swiftxToDOM(content);
+        const dom = bunnixToDOM(content);
         return { key, item, start, end, dom };
     };
 
@@ -127,7 +127,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
             const item = items[index];
             const key = resolveKey(item, index);
             if (nextKeys.has(key)) {
-                console.warn(`Swiftx.ForEach: duplicate key "${String(key)}" at index ${index}, falling back to index.`);
+                console.warn(`Bunnix.ForEach: duplicate key "${String(key)}" at index ${index}, falling back to index.`);
             }
             const entryKey = nextKeys.has(key) ? index : key;
             nextKeys.add(entryKey);
@@ -140,7 +140,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
             } else {
                 if (entry.item !== item) {
                     const content = typeof render === 'function' ? render(item, index) : render;
-                    const nextDom = swiftxToDOM(content);
+                    const nextDom = bunnixToDOM(content);
                     entry.dom.replaceWith(nextDom);
                     entry.dom = nextDom;
                     entry.item = item;
