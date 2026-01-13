@@ -39,6 +39,56 @@ test('navigation.back navigates within the current group history', async () => {
     assert.equal(container.textContent, 'Home');
 });
 
+test('navigation.back pops history without re-adding the last route', async () => {
+    window.history.replaceState({}, '', '/accounts');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
+
+    const container = document.createElement('div');
+    let navigation;
+
+    const Accounts = ({ navigation: nav }) => {
+        navigation = nav;
+        return Swiftx('div', {}, 'Accounts');
+    };
+    const Account = ({ navigation: nav }) => {
+        navigation = nav;
+        return Swiftx('div', {}, 'Account');
+    };
+    const Edit = ({ navigation: nav }) => {
+        navigation = nav;
+        return Swiftx('div', {}, 'Edit');
+    };
+
+    const App = () => RouterRoot(
+        Route.root(() => Swiftx('div', {}, 'Root')),
+        [
+            RouteGroup('/accounts', [
+                Route('/accounts', Accounts),
+                Route('/account/:id', Account),
+                Route('/account/edit/:id', Edit)
+            ])
+        ]
+    );
+
+    Swiftx.render(
+        Swiftx(BrowserRouter, {}, Swiftx(App)),
+        container
+    );
+
+    navigation.push('/account/1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    navigation.push('/account/edit/1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    navigation.back();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(container.textContent, 'Account');
+
+    navigation.back();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(container.textContent, 'Accounts');
+});
+
 test('navigation.back falls back to group root when history is empty', async () => {
     window.history.replaceState({}, '', '/group-two/details');
     window.dispatchEvent(new window.PopStateEvent('popstate'));

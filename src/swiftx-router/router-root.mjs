@@ -169,6 +169,7 @@ export const RouterRoot = (...args) => {
     let forcedRoute = null;
 
     let applyMatch = null;
+    let suppressHistoryRecord = false;
 
     const navigation = {
         push: (path) => {
@@ -221,6 +222,7 @@ export const RouterRoot = (...args) => {
             if (history.length > 0) {
                 const previous = history.pop();
                 groupHistory.set(navigation.group.rootPath, history);
+                suppressHistoryRecord = true;
                 navigate(previous, { replace: true });
             } else {
                 navigate(fallback, { replace: true });
@@ -381,9 +383,10 @@ export const RouterRoot = (...args) => {
         navigation.params = params;
         navigation.group.rootPath = group?.rootPath || entries[0]?.group?.rootPath || '/';
 
-        if (useGroupHistory && previousPath && previousPath !== path) {
+        if (!suppressHistoryRecord && useGroupHistory && previousPath && previousPath !== path) {
             recordHistory(previousGroupRoot || navigation.group.rootPath, previousPath);
         }
+        suppressHistoryRecord = false;
         matchedParams.set(params);
         groupRootPath.set(navigation.group.rootPath);
 
