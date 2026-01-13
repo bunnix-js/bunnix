@@ -37,6 +37,17 @@ const App = () => (
 );
 ```
 
+## Router Context Helper
+
+```javascript
+import { useRouterContext } from 'swiftx/router';
+
+const appContext = useRouterContext({
+    user: null,
+    permissions: []
+});
+```
+
 ## Route Policies
 
 Policies run before rendering and can redirect based on context.

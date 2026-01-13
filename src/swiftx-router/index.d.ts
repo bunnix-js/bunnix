@@ -100,6 +100,7 @@ export function RouterRoot(props: RouterRootProps, children?: any[]): any;
 export namespace RouterRoot {
     function Context(appContext?: any): any;
 }
+export function useRouterContext(appContext?: any): any;
 export function RouteGroup(
     rootPath: string,
     routesOrComponent: RouteDefinition[] | any,

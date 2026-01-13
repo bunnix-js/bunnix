@@ -6,6 +6,7 @@ import { Route } from './route.mjs';
 import { Link } from './link.mjs';
 
 // Public API Exports
+export const useRouterContext = RouterRoot.Context;
 export { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route, Link };
 
 export const SwiftxRouter = {
@@ -14,7 +15,8 @@ export const SwiftxRouter = {
     RouteGroup,
     RoutePolicy,
     Route,
-    Link
+    Link,
+    useRouterContext
 };
 
 const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
@@ -28,6 +30,7 @@ const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
                 routePolicy: 'RoutePolicy',
                 route: 'Route',
                 link: 'Link',
+                useRouterContext: 'useRouterContext',
                 browser: 'BrowserRouter',
                 root: 'RouterRoot',
                 group: 'RouteGroup',

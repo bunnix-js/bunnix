@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy } from '../../index.mjs';
+import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, useRouterContext } from '../../index.mjs';
 
 test('RouterRoot.Context merges defaults and app context', () => {
     const context = RouterRoot.Context({ user: 'ada' });
@@ -15,6 +15,13 @@ test('RouterRoot.Context merges defaults and app context', () => {
 
     context.remove('user');
     assert.equal(context.user, undefined);
+});
+
+test('useRouterContext returns a router context', () => {
+    const context = useRouterContext({ user: 'ada' });
+
+    assert.equal(context.user, 'ada');
+    assert.equal(typeof context.cookies.get, 'function');
 });
 
 test('RouterRoot.Context cookies support get/set/remove', () => {

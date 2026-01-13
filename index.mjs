@@ -15,7 +15,8 @@ import SwiftxRouter, {
     RouteGroup,
     RoutePolicy,
     Route,
-    Link
+    Link,
+    useRouterContext
 } from './src/swiftx-router/index.mjs';
 
 Swiftx.Router = SwiftxRouter;
@@ -30,6 +31,7 @@ export {
     RoutePolicy,
     Route,
     Link,
+    useRouterContext,
     useState,
     useEffect,
     useMemo,
