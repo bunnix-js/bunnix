@@ -7,7 +7,7 @@
 
 [Read the full documentation](https://bunnix-js.github.io/bunnix/)
 
-Bunnix is an ultra-lightweight, functional-first UI framework with a minimal router. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.
+Bunnix is an ultra-lightweight, functional-first UI framework. It favors explicit, "no magic" APIs, reactive state, and a tiny footprint.
 
 ## Why Bunnix
 
@@ -16,7 +16,6 @@ Bunnix is an ultra-lightweight, functional-first UI framework with a minimal rou
 - **Immediate effects**: `useEffect` runs immediately for predictable setup.
 - **Super lightweight**: core stays under ~2KB gzipped.
 - **No dependencies**: vanilla JS, small bundle size.
-- **Router included**: opt-in, scoped navigation with route groups and policies.
 
 ## Install
 
@@ -27,34 +26,16 @@ npm install @bunnix/core
 ## Quick Start
 
 ```js
-import Bunnix, { BrowserRouter } from '@bunnix/core';
-import { RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
-
-const Home = () => (
-    <div>
-        <h1>Home</h1>
-        <Link to="/about">About</Link>
-    </div>
-);
-
-const About = () => <div>About</div>;
+import Bunnix from '@bunnix/core';
 
 const App = () => (
-    <RouterRoot>
-        <RouteGroup root>
-            <Route path="/" component={Home} />
-            <Route path="/about" component={About} />
-        </RouteGroup>
-        <Route notFound component={() => <div>Not found</div>} />
-    </RouterRoot>
+    Bunnix('div', [
+        Bunnix('h1', 'Hello Bunnix'),
+        Bunnix('p', 'A tiny functional-first UI framework.')
+    ])
 );
 
-Bunnix.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
-    document.getElementById('root')
-);
+Bunnix.render(App(), document.getElementById('root'));
 ```
 
 ## Core Usage
@@ -127,38 +108,17 @@ const Panel = () => (
 );
 ```
 
-## Router Overview
-
-Bunnix Router is scoped and context-aware. You define routes with groups and policies and receive a `navigation` object in matched components or layouts.
-
-```js
-import Bunnix from '@bunnix/core';
-import { RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
-
-const App = () => (
-    <RouterRoot>
-        <RouteGroup root layout={AppLayout}>
-            <Route path="/" component={Home} />
-            <Route path="/user/:id" component={UserProfile} />
-        </RouteGroup>
-        <Route notFound component={NotFound} />
-    </RouterRoot>
-);
-```
-
 ## API Highlights
 
 - `Bunnix(tag, props, children)` or `Bunnix.[tag](props, children)`
 - `Bunnix.useState(initial)`, `Bunnix.useEffect(cb, deps)`, `Bunnix.useRef()`
 - `Bunnix.whenReady(cb)`, `Bunnix.render(vdom, container)`
 - `Show(state, content)`, `Bunnix.ForEach(state, key, render)`
-- Router: `BrowserRouter`, `RouterRoot`, `RouteGroup`, `RoutePolicy`, `Route`, `Link`
 
 ## Docs
 
 - Published documentation: https://bunnix-js.github.io/bunnix/
-- Core framework: `src/bunnix/README.md`
-- Router: `src/bunnix-router/README.md`
+- Core framework: `src/README.md`
 
 ## License
 

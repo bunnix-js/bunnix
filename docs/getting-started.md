@@ -5,7 +5,7 @@ title: Getting Started
 
 # Getting Started
 
-Bunnix is a functional-first UI framework with an opt-in router. This guide gets you from install to a working view and points to deeper concepts.
+Bunnix is a functional-first UI framework. This guide gets you from install to a working view and points to deeper concepts.
 
 ## Install
 
@@ -99,4 +99,3 @@ const ExpenseList = () => (
 
 - Read the [Core Overview](./core.md) to understand the Bunnix mental model.
 - Use [Examples](./examples.md) to see full, reactive apps.
-- If you need routing, start at the [Router Overview](./router.md).

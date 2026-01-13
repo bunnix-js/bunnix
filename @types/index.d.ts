@@ -1,3 +1,5 @@
+/// <reference path="./bunnix-jsx.d.ts" />
+
 /**
  * Bunnix Core Type Definitions
  */
@@ -27,7 +29,6 @@ export type VNode = {
     children: any[];
 };
 
-import type BunnixRouter from '../bunnix-router/index';
 
 export interface BunnixFactory {
     (tag: any, propsOrChildren?: any, ...children: any[]): VNode;
@@ -48,7 +49,6 @@ export interface BunnixFactory {
     Effect: typeof Effect;
     Compute: typeof Compute;
     Ref: () => { current: any };
-    Router: typeof BunnixRouter;
     /** Dynamic tag factory (e.g., Bunnix.div(...)) */
     [tag: string]: any;
 }

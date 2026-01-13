@@ -1,7 +1,7 @@
 {
     "name": "@bunnix/core",
     "version": "0.9.0",
-    "description": "Bunnix: ultra-lightweight reactive UI framework with a minimal router and keyed list rendering",
+    "description": "Bunnix: ultra-lightweight reactive UI framework with keyed list rendering",
     "license": "ISC",
     "author": "@bunnix",
     "publishConfig": {
@@ -10,32 +10,25 @@
     "type": "module",
     "main": "./index.mjs",
     "module": "./index.mjs",
-    "types": "./index.d.ts",
+    "types": "./@types/index.d.ts",
     "exports": {
         ".": {
-            "types": "./index.d.ts",
+            "types": "./@types/index.d.ts",
             "import": "./index.mjs"
         },
-        "./router": {
-            "types": "./router.d.ts",
-            "import": "./router.mjs"
+        "./internal": {
+            "types": "./@types/internal.d.ts",
+            "import": "./internal.mjs"
         },
         "./@types": {
-            "types": "./types/index.d.ts"
-        },
-        "./router/@types": {
-            "types": "./types/router.d.ts"
+            "types": "./@types/index.d.ts"
         }
     },
     "files": [
         "index.mjs",
-        "index.d.ts",
-        "router.mjs",
-        "router.d.ts",
-        "types",
-        "src/bunnix",
-        "src/bunnix-router",
-        "src/bunnix-jsx.d.ts"
+        "internal.mjs",
+        "src",
+        "@types"
     ],
     "scripts": {
         "test": "node --test --import ./tests/setup-dom.mjs"

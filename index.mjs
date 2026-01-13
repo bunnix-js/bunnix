@@ -8,30 +8,10 @@ import Bunnix, {
     Show,
     ForEach,
     Compute
-} from './src/bunnix/index.mjs';
-import BunnixRouter, {
-    BrowserRouter,
-    RouterRoot,
-    RouteGroup,
-    RoutePolicy,
-    Route,
-    Link,
-    useRouterContext
-} from './src/bunnix-router/index.mjs';
-
-Bunnix.Router = BunnixRouter;
-
+} from './src/index.mjs';
 export default Bunnix;
 export {
     Bunnix,
-    BunnixRouter,
-    BrowserRouter,
-    RouterRoot,
-    RouteGroup,
-    RoutePolicy,
-    Route,
-    Link,
-    useRouterContext,
     useState,
     useEffect,
     useMemo,

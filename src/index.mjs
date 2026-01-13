@@ -3,7 +3,7 @@ import { render } from './render.mjs';
 import { State, Effect, Compute } from './state.mjs';
 import { Show, ForEach } from './directives.mjs';
 
-/** @type {import('./index.d.ts').BunnixFactory} */
+/** @type {import('../@types/index.d.ts').BunnixFactory} */
 const BunnixNamespace = /** @type {any} */ (Bunnix);
 
 BunnixNamespace.render = render;
