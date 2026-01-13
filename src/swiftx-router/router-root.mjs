@@ -356,6 +356,8 @@ export const RouterRoot = (...args) => {
     };
 
     applyMatch = () => {
+        const previousPath = navigation.path;
+        const previousGroupRoot = navigation.group.rootPath;
         const path = forcedRoute ? Route._FORBIDDEN : (forcedPath ?? _routeState.get().path);
         forcedPath = null;
         let { route, group, params } = forcedRoute
@@ -378,6 +380,10 @@ export const RouterRoot = (...args) => {
         navigation.path = path;
         navigation.params = params;
         navigation.group.rootPath = group?.rootPath || entries[0]?.group?.rootPath || '/';
+
+        if (useGroupHistory && previousPath && previousPath !== path) {
+            recordHistory(previousGroupRoot || navigation.group.rootPath, previousPath);
+        }
         matchedParams.set(params);
         groupRootPath.set(navigation.group.rootPath);
 
