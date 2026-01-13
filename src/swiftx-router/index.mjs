@@ -1,16 +1,22 @@
 import { BrowserRouter, _routeState } from './browser-router.mjs';
-import { RouterStack } from './router-stack.mjs';
+import { RouterRoot } from './router-root.mjs';
+import { RouteGroup } from './route-group.mjs';
+import { RoutePolicy } from './route-policy.mjs';
 import { Route } from './route.mjs';
 import { Link } from './link.mjs';
 
 // Public API Exports
-export { BrowserRouter, RouterStack, Route, Link };
+export const useRouterContext = RouterRoot.Context;
+export { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route, Link };
 
 export const SwiftxRouter = {
     BrowserRouter,
-    RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
-    Link
+    Link,
+    useRouterContext
 };
 
 const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
@@ -19,9 +25,16 @@ const SwiftxRouterProxy = new Proxy(SwiftxRouter, {
         if (typeof prop === 'string') {
             const aliases = {
                 browserRouter: 'BrowserRouter',
-                routerStack: 'RouterStack',
+                routerRoot: 'RouterRoot',
+                routeGroup: 'RouteGroup',
+                routePolicy: 'RoutePolicy',
                 route: 'Route',
-                link: 'Link'
+                link: 'Link',
+                useRouterContext: 'useRouterContext',
+                browser: 'BrowserRouter',
+                root: 'RouterRoot',
+                group: 'RouteGroup',
+                policy: 'RoutePolicy'
             };
             if (aliases[prop]) return target[aliases[prop]];
         }

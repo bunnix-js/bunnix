@@ -5,7 +5,7 @@ title: Routes
 
 # Routes
 
-Define routes with the fluent `Route` API and register them in a `RouterStack`.
+Define routes with `RouterRoot`, `RouteGroup`, and `Route`.
 
 ## Bootstrap
 
@@ -24,31 +24,47 @@ Swiftx.render(
 ## Define Routes
 
 ```javascript
-import Swiftx, { RouterStack, Route } from 'swiftx';
+import Swiftx from 'swiftx';
+import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
 
 const App = () => (
-    RouterStack(
-        '/',
-        [
-            Route.on('/').render(Home),
-            Route.on('/user/:id').render(UserProfile),
-            Route.notFound.render(NotFound)
-        ]
-    )
+    <RouterRoot>
+        <RouteGroup root>
+            <Route path="/" component={Home} />
+            <Route path="/user/:id" component={UserProfile} />
+        </RouteGroup>
+    </RouterRoot>
 );
 ```
 
-## Route Terminal Actions
-
-A route rule must end with either `.render()` or `.then()`.
-
-- `.render(Component|VDOM)` renders content into the router outlet.
-- `.then((navigation, params) => { ... })` runs side effects.
+## Router Context Helper
 
 ```javascript
-Route.on('/legacy').then((navigation) => {
-    navigation.replace('/new');
+import { useRouterContext } from 'swiftx/router';
+
+const appContext = useRouterContext({
+    user: null,
+    permissions: []
 });
+```
+
+## Route Policies
+
+Policies run before rendering and can redirect based on context.
+
+```javascript
+import { RouterRoot, RouteGroup, RoutePolicy, Route } from 'swiftx/router';
+
+const App = () => (
+    <RouterRoot>
+        <RouteGroup rootPath="/account">
+            <Route path="/account" component={Account} />
+            <RoutePolicy handler={({ context, navigation }) => {
+                if (!context.user) navigation.replace('/login');
+            }} />
+        </RouteGroup>
+    </RouterRoot>
+);
 ```
 
 ## Dynamic Params
@@ -60,3 +76,11 @@ function UserProfile({ params }) {
     return Swiftx('h1', ['User ', params.id]);
 }
 ```
+Params are available on `navigation.params`.
+
+## Matching Rules
+
+- Routes match by path segment count and order.
+- `:param` segments capture values into `params`.
+- The first matching rule wins.
+- `Route.notFound` renders only when no other rule matches.

@@ -5,13 +5,15 @@ title: Router Overview
 
 # Router Overview
 
-Swiftx Router is decentralized and context-aware. Routes are defined with a fluent API, and navigation is scoped to the current stack.
+Swiftx Router is decentralized and context-aware. Routes are defined with `RouterRoot` and scoped `RouteGroup`s using JSX wrappers or the function API.
 
 ## Router Pieces
 
 - `BrowserRouter`: wraps your app and enables routing.
-- `RouterStack`: defines a stack with a root path, routes, and optional layout.
-- `Route`: fluent rule builder with `.on()` and `.notFound`.
+- `RouterRoot`: defines the root router tree.
+- `RouteGroup`: groups routes with shared policies and layouts.
+- `RoutePolicy`: guard/redirect logic for groups.
+- `Route`: route definition helper (`<Route path="/path" component={Component} />`).
 - `Link`: declarative navigation.
 
 ## Read Next

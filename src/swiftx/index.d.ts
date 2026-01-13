@@ -27,6 +27,8 @@ export type VNode = {
     children: any[];
 };
 
+import type SwiftxRouter from '../swiftx-router/index';
+
 export interface SwiftxFactory {
     (tag: any, propsOrChildren?: any, ...children: any[]): VNode;
 
@@ -46,6 +48,7 @@ export interface SwiftxFactory {
     Effect: typeof Effect;
     Compute: typeof Compute;
     Ref: () => { current: any };
+    Router: typeof SwiftxRouter;
     /** Dynamic tag factory (e.g., Swiftx.div(...)) */
     [tag: string]: any;
 }

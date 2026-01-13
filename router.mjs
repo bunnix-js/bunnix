@@ -1,6 +1,8 @@
 export {
     BrowserRouter,
-    RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
     Link,
     SwiftxRouter

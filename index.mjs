@@ -11,19 +11,27 @@ import Swiftx, {
 } from './src/swiftx/index.mjs';
 import SwiftxRouter, {
     BrowserRouter,
-    RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
-    Link
+    Link,
+    useRouterContext
 } from './src/swiftx-router/index.mjs';
+
+Swiftx.Router = SwiftxRouter;
 
 export default Swiftx;
 export {
     Swiftx,
     SwiftxRouter,
     BrowserRouter,
-    RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
     Link,
+    useRouterContext,
     useState,
     useEffect,
     useMemo,
