@@ -1,6 +1,6 @@
 {
     "name": "swiftx",
-    "version": "1.0.0",
+    "version": "0.9.0",
     "description": "Swiftx: ultra-lightweight reactive UI framework with a minimal router and keyed list rendering",
     "license": "ISC",
     "author": "@morissonmaciel",
