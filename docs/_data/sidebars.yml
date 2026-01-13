@@ -2,51 +2,51 @@ docs:
   - title: Getting Started
     items:
       - title: Home
-        url: /swiftx/
+        url: /bunnix/
       - title: Getting Started
-        url: /swiftx/getting-started
+        url: /bunnix/getting-started
 
   - title: Core Concepts
     items:
       - title: Core Overview
-        url: /swiftx/core
+        url: /bunnix/core
       - title: Elements
-        url: /swiftx/elements
+        url: /bunnix/elements
       - title: Rendering
-        url: /swiftx/rendering
+        url: /bunnix/rendering
       - title: State & useState
-        url: /swiftx/state
+        url: /bunnix/state
       - title: Effects
-        url: /swiftx/effects
+        url: /bunnix/effects
       - title: Directives
-        url: /swiftx/directives
+        url: /bunnix/directives
       - title: Refs
-        url: /swiftx/refs
+        url: /bunnix/refs
       - title: Lifecycle
-        url: /swiftx/lifecycle
+        url: /bunnix/lifecycle
       - title: JSX
-        url: /swiftx/jsx
+        url: /bunnix/jsx
 
   - title: Router
     items:
       - title: Router Overview
-        url: /swiftx/router
+        url: /bunnix/router
       - title: Routes
-        url: /swiftx/router-routes
+        url: /bunnix/router-routes
       - title: Layouts
-        url: /swiftx/router-layouts
+        url: /bunnix/router-layouts
       - title: Navigation
-        url: /swiftx/router-navigation
+        url: /bunnix/router-navigation
 
   - title: Examples
     items:
       - title: Examples Overview
-        url: /swiftx/examples
+        url: /bunnix/examples
       - title: Counter
-        url: /swiftx/examples-counter
+        url: /bunnix/examples-counter
       - title: Todo List
-        url: /swiftx/examples-todo
+        url: /bunnix/examples-todo
       - title: Router Layout
-        url: /swiftx/examples-router-layout
+        url: /bunnix/examples-router-layout
       - title: Async Data
-        url: /swiftx/examples-async
+        url: /bunnix/examples-async

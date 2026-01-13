@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route } from '../../index.mjs';
+import Bunnix, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route } from '../../index.mjs';
 
 test('Group policies can redirect based on context', async () => {
     window.history.replaceState({}, '', '/home');
     window.dispatchEvent(new window.PopStateEvent('popstate'));
 
     const container = document.createElement('div');
-    const Home = () => Swiftx('div', {}, 'Home');
-    const Login = () => Swiftx('div', {}, 'Login');
+    const Home = () => Bunnix('div', {}, 'Home');
+    const Login = () => Bunnix('div', {}, 'Login');
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             Route('/login', Login),
             RouteGroup('/home', [
@@ -24,8 +24,8 @@ test('Group policies can redirect based on context', async () => {
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -38,11 +38,11 @@ test('Group policies can redirect to forbidden routes', async () => {
     window.dispatchEvent(new window.PopStateEvent('popstate'));
 
     const container = document.createElement('div');
-    const Admin = () => Swiftx('div', {}, 'Admin');
-    const Forbidden = () => Swiftx('div', {}, 'Forbidden');
+    const Admin = () => Bunnix('div', {}, 'Admin');
+    const Forbidden = () => Bunnix('div', {}, 'Forbidden');
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             RouteGroup('/admin', [
                 Route('/admin', Admin)
@@ -55,8 +55,8 @@ test('Group policies can redirect to forbidden routes', async () => {
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -72,20 +72,20 @@ test('Groups render their own layouts and expose navigation state', async () => 
     let navigation;
 
     const LayoutOne = ({ routerOutlet }) => (
-        Swiftx('section', { id: 'layout-one' }, ['One-', routerOutlet()])
+        Bunnix('section', { id: 'layout-one' }, ['One-', routerOutlet()])
     );
     const LayoutTwo = ({ routerOutlet }) => (
-        Swiftx('section', { id: 'layout-two' }, ['Two-', routerOutlet()])
+        Bunnix('section', { id: 'layout-two' }, ['Two-', routerOutlet()])
     );
 
     const GroupOne = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, `${nav.path}-${nav.params.id}-${nav.group.rootPath}`);
+        return Bunnix('div', {}, `${nav.path}-${nav.params.id}-${nav.group.rootPath}`);
     };
-    const GroupTwo = () => Swiftx('div', {}, 'GroupTwo');
+    const GroupTwo = () => Bunnix('div', {}, 'GroupTwo');
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             RouteGroup('/group-one', [
                 Route('/group-one/:id', GroupOne)
@@ -96,8 +96,8 @@ test('Groups render their own layouts and expose navigation state', async () => 
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 

@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Swiftx Documentation
+title: Bunnix Documentation
 ---
 
-# Swiftx
+# Bunnix
 
-![Swiftx logo](./images/swiftx-transparent-regular.png)
+![Bunnix logo](./images/bunnix-transparent-regular.png)
 
 Ultra-lightweight reactive UI framework with a minimal router and keyed list rendering.
 
@@ -24,14 +24,14 @@ Ultra-lightweight reactive UI framework with a minimal router and keyed list ren
 ## Quick Start
 
 ```bash
-npm install swiftx
+npm install @bunnix/core
 ```
 
 ## Documentation
 
 ### Core Concepts
 
-- [Core Overview](./core.md) - the Swiftx mental model and API map
+- [Core Overview](./core.md) - the Bunnix mental model and API map
 - [Elements](./elements.md) - tag DSL and factory usage
 - [Rendering](./rendering.md) - `render` and mount flow
 - [State](./state.md) - `useState` and State API

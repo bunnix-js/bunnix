@@ -8,10 +8,10 @@ title: Example - Async Data
 This example shows async data loading with `useEffect`, a loading state, and `ForEach` rendering.
 
 ```javascript
-import Swiftx, { Show } from 'swiftx';
+import Bunnix, { Show } from '@bunnix/core';
 
-const loading = Swiftx.useState(true);
-const items = Swiftx.useState([]);
+const loading = Bunnix.useState(true);
+const items = Bunnix.useState([]);
 
 const fetchItems = () => {
     loading.set(true);
@@ -26,21 +26,21 @@ const fetchItems = () => {
     return () => clearTimeout(id);
 };
 
-Swiftx.useEffect(fetchItems, []);
+Bunnix.useEffect(fetchItems, []);
 
 const List = () => (
-    Swiftx('div', [
-        Swiftx('h1', 'Async Items'),
-        Show(loading, Swiftx('p', 'Loading...')),
-        Swiftx('ul', [
-            Swiftx.ForEach(items, 'id', (item) =>
-                Swiftx('li', item.title)
+    Bunnix('div', [
+        Bunnix('h1', 'Async Items'),
+        Show(loading, Bunnix('p', 'Loading...')),
+        Bunnix('ul', [
+            Bunnix.ForEach(items, 'id', (item) =>
+                Bunnix('li', item.title)
             )
         ])
     ])
 );
 
-Swiftx.render(
+Bunnix.render(
     List,
     document.getElementById('root')
 );

@@ -8,25 +8,25 @@ title: Example - Router Layout
 A small app with a layout, scoped navigation, and dynamic params.
 
 ```javascript
-import Swiftx from 'swiftx';
-import { BrowserRouter, RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
+import Bunnix from '@bunnix/core';
+import { BrowserRouter, RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
 
-const Home = () => Swiftx('h1', 'Home');
+const Home = () => Bunnix('h1', 'Home');
 
 const User = ({ navigation }) => (
-    Swiftx('div', [
-        Swiftx('h1', ['User ', navigation.params.id]),
-        Swiftx('button', { click: () => navigation.back('/') }, 'Back')
+    Bunnix('div', [
+        Bunnix('h1', ['User ', navigation.params.id]),
+        Bunnix('button', { click: () => navigation.back('/') }, 'Back')
     ])
 );
 
 function Layout({ routerOutlet, navigation }) {
-    return Swiftx('div', { class: 'layout' }, [
-        Swiftx('nav', [
+    return Bunnix('div', { class: 'layout' }, [
+        Bunnix('nav', [
             Link({ to: '/', navigation }, 'Home'),
             Link({ to: '/user/42', navigation }, 'User 42')
         ]),
-        Swiftx('main', [routerOutlet()])
+        Bunnix('main', [routerOutlet()])
     ]);
 }
 
@@ -40,12 +40,12 @@ const App = () => RouterRoot(
         Layout
     ),
     [
-        Route.notFound(() => Swiftx('h1', 'Not Found'))
+        Route.notFound(() => Bunnix('h1', 'Not Found'))
     ]
 );
 
-Swiftx.render(
-    Swiftx(BrowserRouter, {}, Swiftx(App)),
+Bunnix.render(
+    Bunnix(BrowserRouter, {}, Bunnix(App)),
     document.getElementById('root')
 );
 ```

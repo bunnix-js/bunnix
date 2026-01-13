@@ -1,7 +1,7 @@
 /**
  * VDOM Element Factory
  */
-export const Swiftx = function (tag, propsOrChildren, ...restChildren) {
+export const Bunnix = function (tag, propsOrChildren, ...restChildren) {
     const el = { tag, props: {}, events: {}, children: [] }
     let p = propsOrChildren, c = restChildren
 

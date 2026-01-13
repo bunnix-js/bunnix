@@ -1,20 +1,20 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { useEffect, useState } from '../../index.mjs';
+import Bunnix, { useEffect, useState } from '../../index.mjs';
 
-test('Swiftx.render mounts content into a container', () => {
+test('Bunnix.render mounts content into a container', () => {
     const container = document.createElement('div');
-    Swiftx.render(Swiftx('div', { id: 'root' }, 'Hello'), container);
+    Bunnix.render(Bunnix('div', { id: 'root' }, 'Hello'), container);
     assert.equal(container.querySelector('#root')?.textContent, 'Hello');
 });
 
-test('Swiftx renders SVG elements with the proper namespace', () => {
+test('Bunnix renders SVG elements with the proper namespace', () => {
     const container = document.createElement('div');
-    const view = Swiftx('svg', { width: '10', height: '10' }, [
-        Swiftx('circle', { cx: '5', cy: '5', r: '4', fill: 'currentColor' })
+    const view = Bunnix('svg', { width: '10', height: '10' }, [
+        Bunnix('circle', { cx: '5', cy: '5', r: '4', fill: 'currentColor' })
     ]);
 
-    Swiftx.render(view, container);
+    Bunnix.render(view, container);
 
     const svg = container.querySelector('svg');
     const circle = container.querySelector('circle');
@@ -24,9 +24,9 @@ test('Swiftx renders SVG elements with the proper namespace', () => {
     assert.equal(circle.namespaceURI, 'http://www.w3.org/2000/svg');
 });
 
-test('Swiftx renders HTML elements without the SVG namespace', () => {
+test('Bunnix renders HTML elements without the SVG namespace', () => {
     const container = document.createElement('div');
-    Swiftx.render(Swiftx('div', { id: 'box' }, 'Hi'), container);
+    Bunnix.render(Bunnix('div', { id: 'box' }, 'Hi'), container);
 
     const div = container.querySelector('div');
     assert.ok(div);
@@ -37,8 +37,8 @@ test('state can bind to inline styles', () => {
     const color = useState('rgb(0, 0, 0)');
     const container = document.createElement('div');
 
-    Swiftx.render(
-        Swiftx('div', { style: { color } }, 'Color'),
+    Bunnix.render(
+        Bunnix('div', { style: { color } }, 'Color'),
         container
     );
 
@@ -58,17 +58,17 @@ test('form input toggles submit disabled state via effect', () => {
     }, [text]);
 
     const Form = () => (
-        Swiftx('form', {}, [
-            Swiftx('input', {
+        Bunnix('form', {}, [
+            Bunnix('input', {
                 type: 'text',
                 change: (event) => text.set(event.target.value)
             }),
-            Swiftx('button', { type: 'submit', disabled: isDisabled }, 'Submit')
+            Bunnix('button', { type: 'submit', disabled: isDisabled }, 'Submit')
         ])
     );
 
     const container = document.createElement('div');
-    Swiftx.render(Form, container);
+    Bunnix.render(Form, container);
 
     const input = container.querySelector('input');
     const button = container.querySelector('button');

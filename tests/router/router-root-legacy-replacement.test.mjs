@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route } from '../../index.mjs';
+import Bunnix, { BrowserRouter, RouterRoot, RouteGroup, RoutePolicy, Route } from '../../index.mjs';
 
 test('RouterRoot renders the matched route', () => {
     window.history.replaceState({}, '', '/');
@@ -9,13 +9,13 @@ test('RouterRoot renders the matched route', () => {
     const container = document.createElement('div');
     const App = () => RouterRoot(
         RouteGroup.root([
-            Route('/', () => Swiftx('div', {}, 'Home')),
-            Route.notFound(() => Swiftx('div', {}, 'NF'))
+            Route('/', () => Bunnix('div', {}, 'Home')),
+            Route.notFound(() => Bunnix('div', {}, 'NF'))
         ])
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -29,15 +29,15 @@ test('RouterRoot falls back to notFound when no route matches', () => {
     const container = document.createElement('div');
     const App = () => RouterRoot(
         RouteGroup.root([
-            Route('/', () => Swiftx('div', {}, 'Home'))
+            Route('/', () => Bunnix('div', {}, 'Home'))
         ]),
         [
-            Route.notFound(() => Swiftx('div', {}, 'NF'))
+            Route.notFound(() => Bunnix('div', {}, 'NF'))
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -54,18 +54,18 @@ test('RouterRoot layout renders once across route changes in same group', async 
 
     const Layout = ({ routerOutlet }) => {
         layoutRenderCount += 1;
-        return Swiftx('div', { id: 'layout' }, [
-            Swiftx('span', { id: 'layout-token' }, layoutToken),
-            Swiftx('main', [routerOutlet()])
+        return Bunnix('div', { id: 'layout' }, [
+            Bunnix('span', { id: 'layout-token' }, layoutToken),
+            Bunnix('main', [routerOutlet()])
         ]);
     };
 
     let navigation;
     const Home = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, 'Home');
+        return Bunnix('div', {}, 'Home');
     };
-    const About = () => Swiftx('div', {}, 'About');
+    const About = () => Bunnix('div', {}, 'About');
 
     const App = () => RouterRoot(
         RouteGroup.root([
@@ -74,8 +74,8 @@ test('RouterRoot layout renders once across route changes in same group', async 
         ], [], Layout)
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -102,8 +102,8 @@ test('RouterRoot does not keep list view when linking to detail route', async ()
     const container = document.createElement('div');
 
     const ExpensesByAccount = ({ navigation }) => (
-        Swiftx('div', { id: 'expense-list' }, [
-            Swiftx('a', {
+        Bunnix('div', { id: 'expense-list' }, [
+            Bunnix('a', {
                 href: '/expense/10/99',
                 click: (event) => {
                     event.preventDefault();
@@ -112,7 +112,7 @@ test('RouterRoot does not keep list view when linking to detail route', async ()
             }, 'Go to expense')
         ])
     );
-    const ExpenseDetails = () => Swiftx('div', { id: 'expense-detail' }, 'Expense Details');
+    const ExpenseDetails = () => Bunnix('div', { id: 'expense-detail' }, 'Expense Details');
 
     const App = () => RouterRoot(
         RouteGroup.root([
@@ -121,8 +121,8 @@ test('RouterRoot does not keep list view when linking to detail route', async ()
         ])
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -144,8 +144,8 @@ test('RouterRoot policies can trigger redirects', async () => {
 
     const container = document.createElement('div');
 
-    const Home = () => Swiftx('div', { id: 'home' }, 'Home');
-    const Account = () => Swiftx('div', { id: 'account' }, 'Account');
+    const Home = () => Bunnix('div', { id: 'home' }, 'Home');
+    const Account = () => Bunnix('div', { id: 'account' }, 'Account');
 
     const App = () => RouterRoot(
         RouteGroup.root([
@@ -158,8 +158,8 @@ test('RouterRoot policies can trigger redirects', async () => {
         ])
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 

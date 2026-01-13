@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { BrowserRouter, RouterRoot, RouteGroup, Route } from '../../index.mjs';
+import Bunnix, { BrowserRouter, RouterRoot, RouteGroup, Route } from '../../index.mjs';
 
 test('navigation.back navigates within the current group history', async () => {
     window.history.replaceState({}, '', '/group-one');
@@ -11,12 +11,12 @@ test('navigation.back navigates within the current group history', async () => {
 
     const Home = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, 'Home');
+        return Bunnix('div', {}, 'Home');
     };
-    const Details = () => Swiftx('div', {}, 'Details');
+    const Details = () => Bunnix('div', {}, 'Details');
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             RouteGroup('/group-one', [
                 Route('/group-one', Home),
@@ -25,8 +25,8 @@ test('navigation.back navigates within the current group history', async () => {
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -48,19 +48,19 @@ test('navigation.back pops history without re-adding the last route', async () =
 
     const Accounts = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, 'Accounts');
+        return Bunnix('div', {}, 'Accounts');
     };
     const Account = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, 'Account');
+        return Bunnix('div', {}, 'Account');
     };
     const Edit = ({ navigation: nav }) => {
         navigation = nav;
-        return Swiftx('div', {}, 'Edit');
+        return Bunnix('div', {}, 'Edit');
     };
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             RouteGroup('/accounts', [
                 Route('/accounts', Accounts),
@@ -70,8 +70,8 @@ test('navigation.back pops history without re-adding the last route', async () =
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -95,16 +95,16 @@ test('navigation.back falls back to group root when history is empty', async () 
 
     const container = document.createElement('div');
 
-    const GroupRoot = () => Swiftx('div', {}, 'GroupRoot');
+    const GroupRoot = () => Bunnix('div', {}, 'GroupRoot');
     const Details = ({ navigation }) => {
-        Swiftx.useEffect(() => {
+        Bunnix.useEffect(() => {
             navigation.back();
         }, []);
-        return Swiftx('div', {}, 'Details');
+        return Bunnix('div', {}, 'Details');
     };
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             RouteGroup('/group-two', [
                 Route('/group-two', GroupRoot),
@@ -113,8 +113,8 @@ test('navigation.back falls back to group root when history is empty', async () 
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 
@@ -128,16 +128,16 @@ test('navigation.back uses explicit fallback when provided', async () => {
 
     const container = document.createElement('div');
 
-    const Fallback = () => Swiftx('div', {}, 'Fallback');
+    const Fallback = () => Bunnix('div', {}, 'Fallback');
     const Details = ({ navigation }) => {
-        Swiftx.useEffect(() => {
+        Bunnix.useEffect(() => {
             navigation.back('/fallback');
         }, []);
-        return Swiftx('div', {}, 'Details');
+        return Bunnix('div', {}, 'Details');
     };
 
     const App = () => RouterRoot(
-        Route.root(() => Swiftx('div', {}, 'Root')),
+        Route.root(() => Bunnix('div', {}, 'Root')),
         [
             Route('/fallback', Fallback),
             RouteGroup('/group-three', [
@@ -146,8 +146,8 @@ test('navigation.back uses explicit fallback when provided', async () => {
         ]
     );
 
-    Swiftx.render(
-        Swiftx(BrowserRouter, {}, Swiftx(App)),
+    Bunnix.render(
+        Bunnix(BrowserRouter, {}, Bunnix(App)),
         container
     );
 

@@ -5,21 +5,21 @@ title: JSX
 
 # JSX
 
-Swiftx supports JSX when your tooling compiles JSX to `Swiftx(...)` calls.
+Bunnix supports JSX when your tooling compiles JSX to `Bunnix(...)` calls.
 
 ## Example
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
 const App = () => (
     <div class="panel">
-        <h1>JSX with Swiftx</h1>
-        <p>Configure your compiler to use Swiftx as the JSX factory.</p>
+        <h1>JSX with Bunnix</h1>
+        <p>Configure your compiler to use Bunnix as the JSX factory.</p>
     </div>
 );
 
-Swiftx.render(
+Bunnix.render(
     <App />,
     document.getElementById('root')
 );

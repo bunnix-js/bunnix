@@ -37,12 +37,12 @@ function applyProp(node, key, value, isSvg) {
     }
 }
 
-export function swiftxToDOM(element, svgContext = false) {
+export function bunnixToDOM(element, svgContext = false) {
     if (!element) return document.createTextNode('')
 
     // Execute functional components
     if (typeof element.tag === 'function') {
-        return swiftxToDOM(element.tag(element.props, element.children), svgContext)
+        return bunnixToDOM(element.tag(element.props, element.children), svgContext)
     }
 
     // Pass through real DOM nodes
@@ -98,7 +98,7 @@ export function swiftxToDOM(element, svgContext = false) {
 
     if (element.children) {
         for (const child of element.children) {
-            node.appendChild(swiftxToDOM(child, isSvg))
+            node.appendChild(bunnixToDOM(child, isSvg))
         }
     }
 

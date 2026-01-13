@@ -1,13 +1,13 @@
-title: Swiftx
+title: Bunnix
 description: Ultra-lightweight reactive UI framework
 theme: jekyll-theme-minimal
-url: https://morissonmaciel.github.io/swiftx
-baseurl: /swiftx
+url: https://bunnix-js.github.io/bunnix
+baseurl: /bunnix
 markdown: kramdown
 nav:
   - title: Home
     url: /
   - title: Documentation
-    url: /swiftx/
+    url: /bunnix/
   - title: GitHub
-    url: https://github.com/morissonmaciel/swiftx
+    url: https://github.com/bunnix-js/bunnix

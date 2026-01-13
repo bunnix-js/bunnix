@@ -1,4 +1,4 @@
-import Swiftx from '../swiftx/index.mjs';
+import Bunnix from '../bunnix/index.mjs';
 import { navigate as globalNavigate } from './browser-router.mjs';
 
 /**
@@ -22,7 +22,7 @@ export const Link = (props, children) => {
         }
     };
 
-    return Swiftx('a', {
+    return Bunnix('a', {
         href: to,
         click: handleClick,
         ...rest

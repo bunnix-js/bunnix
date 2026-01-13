@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { ForEach, Show, useEffect, useState } from '../../index.mjs';
+import Bunnix, { ForEach, Show, useEffect, useState } from '../../index.mjs';
 
 test('Show toggles content based on state', () => {
     const visible = useState(true);
     const container = document.createElement('div');
 
-    const fragment = Show(visible, Swiftx('span', {}, 'On'));
+    const fragment = Show(visible, Bunnix('span', {}, 'On'));
     container.appendChild(fragment);
     assert.equal(container.textContent, 'On');
 
@@ -24,11 +24,11 @@ test('ForEach updates only the changed keyed item', async () => {
     ]);
 
     const container = document.createElement('div');
-    const list = Swiftx('ul', {}, ForEach(items, 'id', (item) => (
-        Swiftx('li', {}, item.label)
+    const list = Bunnix('ul', {}, ForEach(items, 'id', (item) => (
+        Bunnix('li', {}, item.label)
     )));
 
-    Swiftx.render(list, container);
+    Bunnix.render(list, container);
     await new Promise((resolve) => queueMicrotask(resolve));
 
     const firstRenderNodes = Array.from(container.querySelectorAll('li'));
@@ -61,10 +61,10 @@ test('form submit enables only when all ForEach inputs are filled', async () => 
     }, [users]);
 
     const Form = () => (
-        Swiftx('form', {}, [
-            Swiftx('div', {}, [
+        Bunnix('form', {}, [
+            Bunnix('div', {}, [
                 ForEach(users, 'id', (user, index) => (
-                    Swiftx('input', {
+                    Bunnix('input', {
                         type: 'text',
                         value: user.name,
                         change: (event) => {
@@ -76,12 +76,12 @@ test('form submit enables only when all ForEach inputs are filled', async () => 
                     })
                 ))
             ]),
-            Swiftx('button', { type: 'submit', disabled: isDisabled }, 'Submit')
+            Bunnix('button', { type: 'submit', disabled: isDisabled }, 'Submit')
         ])
     );
 
     const container = document.createElement('div');
-    Swiftx.render(Form, container);
+    Bunnix.render(Form, container);
     await new Promise((resolve) => queueMicrotask(resolve));
 
     let button = container.querySelector('button');
@@ -119,12 +119,12 @@ test('foreach delete buttons enable based on list size and entry value', async (
     ]);
 
     const Form = () => (
-        Swiftx('form', {}, [
-            Swiftx('div', {}, [
+        Bunnix('form', {}, [
+            Bunnix('div', {}, [
                 ForEach(users, 'id', (user, index) => {
                     const deleteDisabled = user.name.trim().length === 0 || users.get().length <= 1;
-                    return Swiftx('div', { class: 'row' }, [
-                        Swiftx('input', {
+                    return Bunnix('div', { class: 'row' }, [
+                        Bunnix('input', {
                             type: 'text',
                             value: user.name,
                             change: (event) => {
@@ -134,7 +134,7 @@ test('foreach delete buttons enable based on list size and entry value', async (
                                 users.set(next);
                             }
                         }),
-                        Swiftx('button', {
+                        Bunnix('button', {
                             type: 'button',
                             disabled: deleteDisabled,
                             click: () => {
@@ -151,7 +151,7 @@ test('foreach delete buttons enable based on list size and entry value', async (
     );
 
     const container = document.createElement('div');
-    Swiftx.render(Form, container);
+    Bunnix.render(Form, container);
     await new Promise((resolve) => queueMicrotask(resolve));
 
     let inputs = Array.from(container.querySelectorAll('input'));

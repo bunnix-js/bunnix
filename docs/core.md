@@ -5,12 +5,12 @@ title: Core Overview
 
 # Core Overview
 
-Swiftx is intentionally small: a VDOM factory, a tag DSL, reactive state, immediate effects, and a handful of directives.
+Bunnix is intentionally small: a VDOM factory, a tag DSL, reactive state, immediate effects, and a handful of directives.
 
 ## The Core Pieces
 
-- **Elements**: build VDOM with `Swiftx('div', ...)` or the tag DSL (`Swiftx.div(...)`).
-- **Render**: mount your root with `Swiftx.render`.
+- **Elements**: build VDOM with `Bunnix('div', ...)` or the tag DSL (`Bunnix.div(...)`).
+- **Render**: mount your root with `Bunnix.render`.
 - **State**: `useState` returns a state atom with `get`, `set`, `subscribe`, and `map`.
 - **Effects**: `useEffect` runs immediately for predictable setup and can return cleanup.
 - **Computed**: `Compute` / `useMemo` derives read-only state from other atoms.

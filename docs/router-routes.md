@@ -10,10 +10,10 @@ Define routes with `RouterRoot`, `RouteGroup`, and `Route`.
 ## Bootstrap
 
 ```javascript
-import Swiftx, { BrowserRouter } from 'swiftx';
+import Bunnix, { BrowserRouter } from '@bunnix/core';
 import App from './App.js';
 
-Swiftx.render(
+Bunnix.render(
     <BrowserRouter>
         <App />
     </BrowserRouter>,
@@ -24,8 +24,8 @@ Swiftx.render(
 ## Define Routes
 
 ```javascript
-import Swiftx from 'swiftx';
-import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
+import Bunnix from '@bunnix/core';
+import { RouterRoot, RouteGroup, Route } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>
@@ -40,7 +40,7 @@ const App = () => (
 ## Router Context Helper
 
 ```javascript
-import { useRouterContext } from 'swiftx/router';
+import { useRouterContext } from '@bunnix/core/router';
 
 const appContext = useRouterContext({
     user: null,
@@ -53,7 +53,7 @@ const appContext = useRouterContext({
 Policies run before rendering and can redirect based on context.
 
 ```javascript
-import { RouterRoot, RouteGroup, RoutePolicy, Route } from 'swiftx/router';
+import { RouterRoot, RouteGroup, RoutePolicy, Route } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>
@@ -73,7 +73,7 @@ const App = () => (
 
 ```javascript
 function UserProfile({ params }) {
-    return Swiftx('h1', ['User ', params.id]);
+    return Bunnix('h1', ['User ', params.id]);
 }
 ```
 Params are available on `navigation.params`.

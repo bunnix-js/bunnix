@@ -1,6 +1,6 @@
-# Swiftx Router
+# Bunnix Router
 
-A decentralized, context-aware routing solution for the Swiftx framework.
+A decentralized, context-aware routing solution for the Bunnix framework.
 
 ## Key Features
 
@@ -14,10 +14,10 @@ A decentralized, context-aware routing solution for the Swiftx framework.
 To enable routing, you must wrap your root component in the `BrowserRouter` when calling the render function.
 
 ```javascript
-import Swiftx, { BrowserRouter } from 'swiftx';
+import Bunnix, { BrowserRouter } from '@bunnix/core';
 import App from './App.js';
 
-Swiftx.render(
+Bunnix.render(
     <BrowserRouter>
         <App />
     </BrowserRouter>,
@@ -29,8 +29,8 @@ Swiftx.render(
 
 ### Setting up the Router
 ```javascript
-import Swiftx from 'swiftx';
-import { RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
+import Bunnix from '@bunnix/core';
+import { RouterRoot, RouteGroup, Route, Link } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>
@@ -46,7 +46,7 @@ const App = () => (
 ### Router Context Helper
 
 ```javascript
-import { useRouterContext } from 'swiftx/router';
+import { useRouterContext } from '@bunnix/core/router';
 
 const appContext = useRouterContext({
     user: null,
@@ -58,7 +58,7 @@ const appContext = useRouterContext({
 Policies run before rendering and can redirect.
 
 ```javascript
-import { RouterRoot, RouteGroup, RoutePolicy, Route } from 'swiftx/router';
+import { RouterRoot, RouteGroup, RoutePolicy, Route } from '@bunnix/core/router';
 
 const App = () => (
     <RouterRoot>
@@ -76,19 +76,19 @@ const App = () => (
 Layouts allow you to wrap your routes with persistent UI (like navbars or sidebars). A layout component receives two special props: `routerOutlet` and `navigation`.
 
 ```javascript
-import { Link } from 'swiftx';
+import { Link } from '@bunnix/core';
 
 /**
  * @param {Function} props.routerOutlet - A function that returns the matched route content.
  * @param {Object} props.navigation - The scoped navigation object.
  */
 function AppLayout({ routerOutlet, navigation }) {
-    return Swiftx('div', { class: 'layout' }, [
-        Swiftx('nav', [
+    return Bunnix('div', { class: 'layout' }, [
+        Bunnix('nav', [
             Link({ to: '/', navigation }, 'Home'),
             Link({ to: '/form', navigation }, 'Form')
         ]),
-        Swiftx('main', [
+        Bunnix('main', [
             // Call the outlet to render the matched route component
             routerOutlet()
         ])
@@ -106,9 +106,9 @@ Matched components and layouts receive the `navigation` object.
 
 ```javascript
 function Home({ navigation }) {
-    return Swiftx('div', [
-        Swiftx('h1', 'Home Page'),
-        Swiftx('button', { 
+    return Bunnix('div', [
+        Bunnix('h1', 'Home Page'),
+        Bunnix('button', { 
             click: () => navigation.push('/user/123') 
         }, 'View User')
     ]);

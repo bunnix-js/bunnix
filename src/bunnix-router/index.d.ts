@@ -126,7 +126,7 @@ export interface LinkProps {
 
 export function Link(props: LinkProps, children: any): any;
 
-export const SwiftxRouter: {
+export const BunnixRouter: {
     BrowserRouter: typeof BrowserRouter;
     RouterRoot: typeof RouterRoot;
     RouteGroup: typeof RouteGroup;
@@ -135,4 +135,4 @@ export const SwiftxRouter: {
     Link: typeof Link;
 };
 
-export default SwiftxRouter;
+export default BunnixRouter;

@@ -5,22 +5,22 @@ title: Getting Started
 
 # Getting Started
 
-Swiftx is a functional-first UI framework with an opt-in router. This guide gets you from install to a working view and points to deeper concepts.
+Bunnix is a functional-first UI framework with an opt-in router. This guide gets you from install to a working view and points to deeper concepts.
 
 ## Install
 
 ```bash
-npm install swiftx
+npm install @bunnix/core
 ```
 
 ## First Render
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const App = () => Swiftx('h1', 'Hello Swiftx');
+const App = () => Bunnix('h1', 'Hello Bunnix');
 
-Swiftx.render(
+Bunnix.render(
     App,
     document.getElementById('root')
 );
@@ -29,35 +29,35 @@ Swiftx.render(
 ## Elements (Tag DSL)
 
 ```javascript
-import Swiftx from 'swiftx';
-const { div, h1, p, button } = Swiftx;
+import Bunnix from '@bunnix/core';
+const { div, h1, p, button } = Bunnix;
 
 const App = () => (
     div({ class: 'panel' }, [
         h1('Welcome'),
-        p('Swiftx uses functions for UI.'),
+        p('Bunnix uses functions for UI.'),
         button({ click: () => alert('Clicked!') }, 'Click')
     ])
 );
 ```
 
-If you prefer JSX, configure your tooling to compile JSX to `Swiftx(...)` calls. See the [JSX guide](./jsx.md).
+If you prefer JSX, configure your tooling to compile JSX to `Bunnix(...)` calls. See the [JSX guide](./jsx.md).
 
 ## State and Effects
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const count = Swiftx.useState(0);
+const count = Bunnix.useState(0);
 
 const Counter = () => (
-    Swiftx('div', [
-        Swiftx('p', ['Count: ', count]),
-        Swiftx('button', { click: () => count.set(count.get() + 1) }, 'Increment')
+    Bunnix('div', [
+        Bunnix('p', ['Count: ', count]),
+        Bunnix('button', { click: () => count.set(count.get() + 1) }, 'Increment')
     ])
 );
 
-Swiftx.useEffect(() => {
+Bunnix.useEffect(() => {
     console.log('Effect runs immediately on call');
 }, []);
 ```
@@ -65,13 +65,13 @@ Swiftx.useEffect(() => {
 ## Conditional Rendering
 
 ```javascript
-import Swiftx, { Show } from 'swiftx';
-const isVisible = Swiftx.useState(false);
+import Bunnix, { Show } from '@bunnix/core';
+const isVisible = Bunnix.useState(false);
 
 const Panel = () => (
-    Swiftx('div', [
-        Show(isVisible, () => Swiftx('p', 'Now you see me')),
-        Swiftx('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
+    Bunnix('div', [
+        Show(isVisible, () => Bunnix('p', 'Now you see me')),
+        Bunnix('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
     ])
 );
 ```
@@ -79,17 +79,17 @@ const Panel = () => (
 ## Keyed Lists
 
 ```javascript
-import Swiftx from 'swiftx';
+import Bunnix from '@bunnix/core';
 
-const expenses = Swiftx.useState([
+const expenses = Bunnix.useState([
     { id: 1, label: 'Rent' },
     { id: 2, label: 'Food' }
 ]);
 
 const ExpenseList = () => (
-    Swiftx('ul', [
-        Swiftx.ForEach(expenses, 'id', (item) =>
-            Swiftx('li', item.label)
+    Bunnix('ul', [
+        Bunnix.ForEach(expenses, 'id', (item) =>
+            Bunnix('li', item.label)
         )
     ])
 );
@@ -97,6 +97,6 @@ const ExpenseList = () => (
 
 ## Next Steps
 
-- Read the [Core Overview](./core.md) to understand the Swiftx mental model.
+- Read the [Core Overview](./core.md) to understand the Bunnix mental model.
 - Use [Examples](./examples.md) to see full, reactive apps.
 - If you need routing, start at the [Router Overview](./router.md).

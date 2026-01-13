@@ -5,7 +5,7 @@ title: Router Overview
 
 # Router Overview
 
-Swiftx Router is decentralized and context-aware. Routes are defined with `RouterRoot` and scoped `RouteGroup`s using JSX wrappers or the function API.
+Bunnix Router is decentralized and context-aware. Routes are defined with `RouterRoot` and scoped `RouteGroup`s using JSX wrappers or the function API.
 
 ## Router Pieces
 

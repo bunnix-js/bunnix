@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import Swiftx, { useMemo, useState } from '../../index.mjs';
+import Bunnix, { useMemo, useState } from '../../index.mjs';
 
 test('useMemo computes a derived readonly state', () => {
     const first = useState('Ada');
@@ -18,19 +18,19 @@ test('useMemo computes a derived readonly state', () => {
     unsubscribe();
 });
 
-test('Swiftx.Compute derives DOM-bound values', () => {
+test('Bunnix.Compute derives DOM-bound values', () => {
     const first = useState('Ada');
     const last = useState('Lovelace');
-    const fullName = Swiftx.Compute([first, last], (a, b) => `${a} ${b}`);
+    const fullName = Bunnix.Compute([first, last], (a, b) => `${a} ${b}`);
 
     const View = () => (
-        Swiftx('div', {}, [
-            Swiftx('p', { id: 'name' }, ['Name: ', fullName])
+        Bunnix('div', {}, [
+            Bunnix('p', { id: 'name' }, ['Name: ', fullName])
         ])
     );
 
     const container = document.createElement('div');
-    Swiftx.render(View, container);
+    Bunnix.render(View, container);
 
     const nameNode = container.querySelector('#name');
     assert.equal(nameNode?.textContent, 'Name: Ada Lovelace');

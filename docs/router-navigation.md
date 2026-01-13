@@ -20,9 +20,9 @@ Matched components and layouts receive a scoped `navigation` object.
 
 ```javascript
 function Home({ navigation }) {
-    return Swiftx('div', [
-        Swiftx('h1', 'Home'),
-        Swiftx('button', { click: () => navigation.push('/profile') }, 'Profile')
+    return Bunnix('div', [
+        Bunnix('h1', 'Home'),
+        Bunnix('button', { click: () => navigation.push('/profile') }, 'Profile')
     ]);
 }
 ```
@@ -30,10 +30,10 @@ function Home({ navigation }) {
 ## Declarative Links
 
 ```javascript
-import { Link } from 'swiftx';
+import { Link } from '@bunnix/core';
 
 const Nav = ({ navigation }) => (
-    Swiftx('nav', [
+    Bunnix('nav', [
         Link({ to: '/', navigation }, 'Home'),
         Link({ to: '/profile', navigation }, 'Profile')
     ])
