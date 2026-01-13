@@ -34,8 +34,30 @@ test('RouterStack renders the matched route', () => {
     assert.equal(container.textContent, 'Home');
 });
 
-test('RouterStack layout renders once across route changes', () => {
+test('RouterStack falls back to notFound when no route matches', () => {
+    window.history.replaceState({}, '', '/missing');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
+
+    const container = document.createElement('div');
+    const App = () => Swiftx(RouterStack, {
+        rootPath: '/',
+        rules: [
+            Route.on('/').render(() => Swiftx('div', {}, 'Home')),
+            Route.notFound.render(() => Swiftx('div', {}, 'NF'))
+        ]
+    });
+
+    Swiftx.render(
+        Swiftx(BrowserRouter, {}, Swiftx(App)),
+        container
+    );
+
+    assert.equal(container.textContent, 'NF');
+});
+
+test('RouterStack layout renders once across route changes', async () => {
     window.history.replaceState({}, '', '/');
+    window.dispatchEvent(new window.PopStateEvent('popstate'));
     const container = document.createElement('div');
 
     let layoutRenderCount = 0;
@@ -69,6 +91,10 @@ test('RouterStack layout renders once across route changes', () => {
         Swiftx(BrowserRouter, {}, Swiftx(App)),
         container
     );
+
+    for (let i = 0; i < 3 && !navigation; i += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+    }
 
     const tokenBefore = container.querySelector('#layout-token')?.textContent;
     assert.ok(navigation);

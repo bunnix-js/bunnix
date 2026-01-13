@@ -12,6 +12,9 @@ import Swiftx, {
 import SwiftxRouter, {
     BrowserRouter,
     RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
     Link
 } from './src/swiftx-router/index.mjs';
@@ -22,6 +25,9 @@ export {
     SwiftxRouter,
     BrowserRouter,
     RouterStack,
+    RouterRoot,
+    RouteGroup,
+    RoutePolicy,
     Route,
     Link,
     useState,

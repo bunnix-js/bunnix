@@ -30,28 +30,52 @@ const createBuilder = (condition) => ({
 });
 
 /**
- * Unified Fluent Route API for defining navigation rules.
- * Use Swiftx.Route.on(path) for specific routes and Swiftx.Route.notFound for fallbacks.
+ * Unified Route API supporting both the legacy fluent builder and the new RouterRoot syntax.
  */
-export const Route = {
-    /**
-     * Starts defining a rule for a specific path.
-     * 
-     * @param {string} path - The path pattern (e.g., '/', '/user/:id').
-     * @returns {Object} A fluent rule builder.
-     */
-    on: (path) => createBuilder(path),
+export const Route = (path, component = null) => ({
+    type: 'Route',
+    kind: 'normal',
+    path,
+    component
+});
 
-    /**
-     * Starts defining a rule for when no other path matches.
-     * 
-     * @returns {Object} A fluent rule builder.
-     */
-    notFound: createBuilder('__swiftx_not_found__'),
+Route._NOT_FOUND = '__swiftx_not_found__';
+Route._FORBIDDEN = '__swiftx_forbidden__';
 
-    /**
-     * Internal constant used to identify the fallback route.
-     * @internal
-     */
-    _NOT_FOUND: '__swiftx_not_found__'
-};
+Route.root = (component = null) => Route('/', component);
+
+Route.on = (path) => createBuilder(path);
+
+const notFoundRoute = (component) => ({
+    type: 'Route',
+    kind: 'notFound',
+    path: Route._NOT_FOUND,
+    component
+});
+notFoundRoute.path = Route._NOT_FOUND;
+notFoundRoute.render = (content) => ({
+    condition: Route._NOT_FOUND,
+    render: content
+});
+notFoundRoute.then = (callback) => ({
+    condition: Route._NOT_FOUND,
+    then: callback
+});
+Route.notFound = notFoundRoute;
+
+const forbiddenRoute = (component) => ({
+    type: 'Route',
+    kind: 'forbidden',
+    path: Route._FORBIDDEN,
+    component
+});
+forbiddenRoute.path = Route._FORBIDDEN;
+forbiddenRoute.render = (content) => ({
+    condition: Route._FORBIDDEN,
+    render: content
+});
+forbiddenRoute.then = (callback) => ({
+    condition: Route._FORBIDDEN,
+    then: callback
+});
+Route.forbidden = forbiddenRoute;

@@ -7,6 +7,8 @@ title: Layouts
 
 Layouts let you wrap routes with persistent UI such as headers or sidebars. Layout components receive `routerOutlet`, `navigation`, and any matched route params.
 
+With the new API, layouts are defined per `RouteGroup`, so each group can have its own wrapper.
+
 ## Layout Example
 
 ```javascript
@@ -44,3 +46,16 @@ const App = () => (
 ```
 
 With a layout, route content renders only where `routerOutlet()` is called. Without a layout, `RouterStack` renders the matched route directly.
+
+## Group Layouts (New API)
+
+```javascript
+import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
+
+const App = () => RouterRoot(
+    RouteGroup('/dashboard', [
+        Route('/dashboard', Dashboard),
+        Route('/dashboard/settings', Settings)
+    ], [], DashboardLayout)
+);
+```

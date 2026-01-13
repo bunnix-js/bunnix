@@ -1,5 +1,6 @@
 import Swiftx from '../swiftx/index.mjs';
 import { isDev } from '../swiftx/dev.mjs';
+import { Route } from './route.mjs';
 
 /**
  * Reactive state containing the current window location path.
@@ -48,14 +49,27 @@ let _internalHistoryCount = 0;
  * @param {boolean} [options.replace=false] - If true, replaces the current history entry instead of pushing a new one.
  */
 export const navigate = (path, options = {}) => {
-    if (window.location.pathname !== path) {
+    const resolvedPath = (path && typeof path === 'object' && typeof path.path === 'string')
+        ? path.path
+        : (typeof path === 'function' && typeof path.path === 'string')
+            ? path.path
+            : path;
+
+    if (typeof resolvedPath !== 'string') return;
+
+    if (resolvedPath === Route._NOT_FOUND || resolvedPath === Route._FORBIDDEN) {
+        _routeState.set({ path: resolvedPath });
+        return;
+    }
+
+    if (window.location.pathname !== resolvedPath) {
         if (options.replace) {
-            window.history.replaceState({}, '', path);
+            window.history.replaceState({}, '', resolvedPath);
         } else {
-            window.history.pushState({}, '', path);
+            window.history.pushState({}, '', resolvedPath);
             _internalHistoryCount++;
         }
-        _routeState.set({ path });
+        _routeState.set({ path: resolvedPath });
     }
 };
 
@@ -65,11 +79,17 @@ export const navigate = (path, options = {}) => {
  * @param {string} [fallback='/'] - The path to navigate to if no internal history exists.
  */
 export const back = (fallback = '/') => {
+    const resolvedFallback = (fallback && typeof fallback === 'object' && typeof fallback.path === 'string')
+        ? fallback.path
+        : (typeof fallback === 'function' && typeof fallback.path === 'string')
+            ? fallback.path
+            : fallback;
+
     if (_internalHistoryCount > 0) {
         _internalHistoryCount--;
         window.history.back();
     } else {
-        navigate(fallback, { replace: true });
+        navigate(resolvedFallback, { replace: true });
     }
 };
 

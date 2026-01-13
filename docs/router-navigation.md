@@ -12,7 +12,10 @@ Matched components and layouts receive a scoped `navigation` object.
 - `navigation.push(path)`
 - `navigation.replace(path)`
 - `navigation.back(fallback?)`
-- `navigation.currentPath` (reactive state)
+- `navigation.path`
+- `navigation.params`
+- `navigation.group.rootPath`
+- `navigation.currentPath` (reactive state, legacy)
 - `navigation.rootPath`
 
 ## Using navigation in a Component
@@ -64,3 +67,9 @@ function GuardedRoute({ navigation }) {
     return Swiftx('div', 'Protected content');
 }
 ```
+
+## Group History
+
+`navigation.back()` uses group-scoped history in the new router. If there is no
+history for the current group, it falls back to the group's root path (or the
+explicit fallback you pass in).
