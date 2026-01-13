@@ -1,5 +1,5 @@
 {
-    "name": "swiftx",
+    "name": "@bunnix/core",
     "version": "0.9.0",
     "description": "Swiftx: ultra-lightweight reactive UI framework with a minimal router and keyed list rendering",
     "license": "ISC",
