@@ -37,8 +37,6 @@ docs:
         url: /swiftx/router-layouts
       - title: Navigation
         url: /swiftx/router-navigation
-      - title: Migration Guide
-        url: /swiftx/router-migration
 
   - title: Examples
     items:

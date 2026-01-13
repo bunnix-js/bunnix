@@ -5,7 +5,7 @@ title: Routes
 
 # Routes
 
-Define routes with the fluent `Route` API and register them in a `RouterStack`.
+Define routes with `RouterRoot`, `RouteGroup`, and `Route`.
 
 ## Bootstrap
 
@@ -21,48 +21,39 @@ Swiftx.render(
 );
 ```
 
-## Define Routes (New API)
+## Define Routes
 
 ```javascript
 import Swiftx from 'swiftx';
 import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
 
-const App = () => RouterRoot(
-    RouteGroup.root([
-        Route('/', Home),
-        Route('/user/:id', UserProfile)
-    ])
+const App = () => (
+    <RouterRoot>
+        <RouteGroup root>
+            <Route path="/" component={Home} />
+            <Route path="/user/:id" component={UserProfile} />
+        </RouteGroup>
+    </RouterRoot>
 );
 ```
 
-## Define Routes (Legacy RouterStack)
+## Route Policies
+
+Policies run before rendering and can redirect based on context.
 
 ```javascript
-import Swiftx, { RouterStack, Route } from 'swiftx';
+import { RouterRoot, RouteGroup, RoutePolicy, Route } from 'swiftx/router';
 
 const App = () => (
-    RouterStack(
-        '/',
-        [
-            Route.on('/').render(Home),
-            Route.on('/user/:id').render(UserProfile),
-            Route.notFound.render(NotFound)
-        ]
-    )
+    <RouterRoot>
+        <RouteGroup rootPath="/account">
+            <Route path="/account" component={Account} />
+            <RoutePolicy handler={({ context, navigation }) => {
+                if (!context.user) navigation.replace('/login');
+            }} />
+        </RouteGroup>
+    </RouterRoot>
 );
-```
-
-## Route Terminal Actions (Legacy)
-
-A route rule must end with either `.render()` or `.then()`.
-
-- `.render(Component|VDOM)` renders content into the router outlet.
-- `.then((navigation, params) => { ... })` runs side effects.
-
-```javascript
-Route.on('/legacy').then((navigation) => {
-    navigation.replace('/new');
-});
 ```
 
 ## Dynamic Params
@@ -74,8 +65,7 @@ function UserProfile({ params }) {
     return Swiftx('h1', ['User ', params.id]);
 }
 ```
-
-In the new API, params are available on `navigation.params`.
+Params are available on `navigation.params`.
 
 ## Matching Rules
 

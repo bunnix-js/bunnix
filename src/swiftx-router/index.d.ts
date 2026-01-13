@@ -3,11 +3,11 @@
  */
 export interface Navigation {
     /** Navigates to a new path. */
-    push(path: string | RouteDefinition | RouteSpecialBuilder): void;
+    push(path: string | RouteDefinition | RouteSpecial): void;
     /** Replaces current history entry. */
-    replace(path: string | RouteDefinition | RouteSpecialBuilder): void;
+    replace(path: string | RouteDefinition | RouteSpecial): void;
     /** Navigates back or to fallback. */
-    back(fallback?: string | RouteDefinition | RouteSpecialBuilder): void;
+    back(fallback?: string | RouteDefinition | RouteSpecial): void;
     /** Current resolved path. */
     path: string;
     /** Current route params. */
@@ -25,11 +25,6 @@ export interface Navigation {
 /**
  * Route rule builder.
  */
-export interface RouteBuilder {
-    render(component: any): any;
-    then(callback: (navigation: Navigation, params: Record<string, string>) => void): any;
-}
-
 /**
  * Fluent API for defining routes.
  */
@@ -40,22 +35,19 @@ export interface RouteDefinition {
     component?: any;
 }
 
-export interface RouteSpecialBuilder {
+export interface RouteSpecial {
     (component: any): RouteDefinition;
-    render(component: any): any;
-    then(callback: (navigation: Navigation, params: Record<string, string>) => void): any;
     path: string;
 }
 
 export const Route: {
     (path: string, component?: any): RouteDefinition;
+    (props: RouteProps, children?: any[]): RouteDefinition;
     root(component?: any): RouteDefinition;
-    /** Define a rule for a specific path (e.g., '/', '/user/:id'). */
-    on(path: string): RouteBuilder;
     /** Define a fallback rule. */
-    notFound: RouteSpecialBuilder;
+    notFound: RouteSpecial;
     /** Define a forbidden rule. */
-    forbidden: RouteSpecialBuilder;
+    forbidden: RouteSpecial;
     _NOT_FOUND: string;
     _FORBIDDEN: string;
 };
@@ -75,24 +67,36 @@ export interface RouteGroupDefinition {
     isRoot?: boolean;
 }
 
-/**
- * Props for the RouterStack component.
- */
-export interface RouterStackProps {
-    rootPath: string;
-    rules: any[];
-    layout?: (props: { routerOutlet: () => any, navigation: Navigation }) => any;
+export interface RouterRootProps {
+    context?: any;
+    children?: any;
 }
 
-export function RouterStack(props: RouterStackProps): any;
-export function RouterStack(
-    rootPath: string,
-    rules: any[],
-    layout?: (props: { routerOutlet: () => any, navigation: Navigation }) => any
-): any;
+export interface RouteGroupProps {
+    root?: boolean;
+    rootPath?: string;
+    layout?: (props: any) => any;
+    policies?: RoutePolicyDefinition[];
+    component?: any;
+    children?: any;
+}
+
+export interface RouteProps {
+    path?: string;
+    component?: any;
+    root?: boolean;
+    notFound?: boolean;
+    forbidden?: boolean;
+}
+
+export interface RoutePolicyProps {
+    handler: (params: { context: any; navigation: Navigation }) => void;
+}
+
 export function BrowserRouter(child: any): any;
 export function RouterRoot(root: RouteDefinition | RouteGroupDefinition, routes?: Array<RouteDefinition | RouteGroupDefinition>): any;
 export function RouterRoot(context: any, root: RouteDefinition | RouteGroupDefinition, routes?: Array<RouteDefinition | RouteGroupDefinition>): any;
+export function RouterRoot(props: RouterRootProps, children?: any[]): any;
 export namespace RouterRoot {
     function Context(appContext?: any): any;
 }
@@ -102,6 +106,7 @@ export function RouteGroup(
     policiesOrLayout?: RoutePolicyDefinition[] | ((props: any) => any),
     layout?: (props: any) => any
 ): RouteGroupDefinition;
+export function RouteGroup(props: RouteGroupProps, children?: any[]): RouteGroupDefinition;
 export namespace RouteGroup {
     function root(
         routesOrComponent: RouteDefinition[] | any,
@@ -110,6 +115,7 @@ export namespace RouteGroup {
     ): RouteGroupDefinition;
 }
 export function RoutePolicy(handler: (params: { context: any; navigation: Navigation }) => void): RoutePolicyDefinition;
+export function RoutePolicy(props: RoutePolicyProps, children?: any[]): RoutePolicyDefinition;
 
 export interface LinkProps {
     to: string;
@@ -121,7 +127,6 @@ export function Link(props: LinkProps, children: any): any;
 
 export const SwiftxRouter: {
     BrowserRouter: typeof BrowserRouter;
-    RouterStack: typeof RouterStack;
     RouterRoot: typeof RouterRoot;
     RouteGroup: typeof RouteGroup;
     RoutePolicy: typeof RoutePolicy;

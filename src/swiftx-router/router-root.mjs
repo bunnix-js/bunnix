@@ -5,13 +5,72 @@ import { _routeState, incrementRouterCount, navigate, back } from './browser-rou
 import { Route } from './route.mjs';
 import { RouteGroup } from './route-group.mjs';
 import { createRouterContext, isRouterContext } from './router-context.mjs';
+import { isVdomNode, normalizeJsxChildren } from './jsx-helpers.mjs';
 
 const isRouteLike = (value) => value && typeof value === 'object' && value.type === 'Route';
 const isGroupLike = (value) => value && typeof value === 'object' && value.type === 'RouteGroup';
+const isPolicyLike = (value) => value && typeof value === 'object' && value.type === 'RoutePolicy';
 
 const normalizeList = (value) => {
     if (!value) return [];
     return Array.isArray(value) ? value : [value];
+};
+
+const isJsxInvocation = (args) => (
+    args.length === 2
+    && Array.isArray(args[1])
+    && !isRouteLike(args[0])
+    && !isGroupLike(args[0])
+);
+
+const resolveJsxNode = (child) => {
+    if (isVdomNode(child)) {
+        if (typeof child.tag !== 'function') {
+            throw new Error('RouterRoot children must be Route or RouteGroup components.');
+        }
+        return child.tag(child.props, child.children);
+    }
+    return child;
+};
+
+const normalizeJsxDefinitions = (children) => (
+    normalizeJsxChildren(children).map(resolveJsxNode)
+);
+
+const parseRouterRootJsx = (props = {}, children = []) => {
+    const context = props.context ?? null;
+    const definitions = normalizeJsxDefinitions(children);
+    const invalid = definitions.filter((entry) => (
+        entry !== null
+        && entry !== undefined
+        && !isGroupLike(entry)
+        && !isRouteLike(entry)
+        && !isPolicyLike(entry)
+    ));
+    const groups = definitions.filter(isGroupLike);
+    const routes = definitions.filter(isRouteLike);
+    const policies = definitions.filter(isPolicyLike);
+
+    if (invalid.length > 0) {
+        throw new Error('RouterRoot children must be Route or RouteGroup components.');
+    }
+
+    if (policies.length > 0) {
+        throw new Error('RoutePolicy cannot be a direct child of RouterRoot.');
+    }
+
+    const rootGroups = groups.filter((group) => group.isRoot);
+    const rootRoutes = routes.filter((route) => route.path === '/');
+    const rootDefs = [...rootGroups, ...rootRoutes];
+
+    if (rootDefs.length !== 1) {
+        throw new Error('RouterRoot requires exactly one root RouteGroup or Route.');
+    }
+
+    const rootDef = rootDefs[0];
+    const extraDefs = definitions.filter((entry) => entry !== rootDef);
+
+    return { context, rootDef, extraDefs };
 };
 
 const matchPath = (pattern, path) => {
@@ -63,6 +122,13 @@ export const RouterRoot = (...args) => {
     let rootDef = args[0];
     let extraDefs = args[1];
 
+    if (isJsxInvocation(args)) {
+        const parsed = parseRouterRootJsx(args[0], args[1]);
+        context = parsed.context;
+        rootDef = parsed.rootDef;
+        extraDefs = parsed.extraDefs;
+    }
+
     if (args.length > 1 && rootDef && !isRouteLike(rootDef) && !isGroupLike(rootDef)) {
         context = rootDef;
         rootDef = args[1];
@@ -70,22 +136,10 @@ export const RouterRoot = (...args) => {
     }
 
     let contextValue = context;
-    const routerOptions = (contextValue && typeof contextValue === 'object' && contextValue.__routerOptions)
-        ? contextValue.__routerOptions
-        : null;
-    if (contextValue && typeof contextValue === 'object' && contextValue.__routerOptions) {
-        if (isRouterContext(contextValue)) {
-            delete contextValue.__routerOptions;
-        } else {
-            const { __routerOptions, ...rest } = contextValue;
-            contextValue = rest;
-        }
-    }
-
     const resolvedContext = isRouterContext(contextValue)
         ? contextValue
         : createRouterContext(contextValue ?? {});
-    const useGroupHistory = routerOptions?.historyMode !== 'global';
+    const useGroupHistory = true;
     const entries = [];
     const specialRoutes = { notFound: null };
 

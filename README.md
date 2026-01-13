@@ -16,7 +16,7 @@ Swiftx is an ultra-lightweight, functional-first UI framework with a minimal rou
 - **Immediate effects**: `useEffect` runs immediately for predictable setup.
 - **Super lightweight**: core stays under ~2KB gzipped.
 - **No dependencies**: vanilla JS, small bundle size.
-- **Router included**: opt-in, scoped navigation with a fluent API.
+- **Router included**: opt-in, scoped navigation with route groups and policies.
 
 ## Install
 
@@ -27,7 +27,8 @@ npm install swiftx
 ## Quick Start
 
 ```js
-import Swiftx, { BrowserRouter, RouterStack, Route, Link } from 'swiftx';
+import Swiftx, { BrowserRouter } from 'swiftx';
+import { RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
 
 const Home = () => (
     <div>
@@ -39,14 +40,13 @@ const Home = () => (
 const About = () => <div>About</div>;
 
 const App = () => (
-    <RouterStack
-        rootPath="/"
-        rules={[
-            Route.on('/').render(Home),
-            Route.on('/about').render(About),
-            Route.notFound.render(() => <div>Not found</div>)
-        ]}
-    />
+    <RouterRoot>
+        <RouteGroup root>
+            <Route path="/" component={Home} />
+            <Route path="/about" component={About} />
+        </RouteGroup>
+        <Route notFound component={() => <div>Not found</div>} />
+    </RouterRoot>
 );
 
 Swiftx.render(
@@ -129,21 +129,20 @@ const Panel = () => (
 
 ## Router Overview
 
-Swiftx Router is scoped and context-aware. You define routes with a fluent API and receive a `navigation` object in matched components or layouts.
+Swiftx Router is scoped and context-aware. You define routes with groups and policies and receive a `navigation` object in matched components or layouts.
 
 ```js
-import Swiftx, { RouterStack, Route, Link } from 'swiftx';
+import Swiftx from 'swiftx';
+import { RouterRoot, RouteGroup, Route, Link } from 'swiftx/router';
 
 const App = () => (
-    RouterStack(
-        '/',
-        [
-            Route.on('/').render(Home),
-            Route.on('/user/:id').render(UserProfile),
-            Route.notFound.render(NotFound)
-        ],
-        AppLayout
-    )
+    <RouterRoot>
+        <RouteGroup root layout={AppLayout}>
+            <Route path="/" component={Home} />
+            <Route path="/user/:id" component={UserProfile} />
+        </RouteGroup>
+        <Route notFound component={NotFound} />
+    </RouterRoot>
 );
 ```
 
@@ -153,7 +152,7 @@ const App = () => (
 - `Swiftx.useState(initial)`, `Swiftx.useEffect(cb, deps)`, `Swiftx.useRef()`
 - `Swiftx.whenReady(cb)`, `Swiftx.render(vdom, container)`
 - `Show(state, content)`, `Swiftx.ForEach(state, key, render)`
-- Router: `BrowserRouter`, `RouterStack`, `Route`, `Link`
+- Router: `BrowserRouter`, `RouterRoot`, `RouteGroup`, `RoutePolicy`, `Route`, `Link`
 
 ## Docs
 

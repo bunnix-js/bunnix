@@ -5,59 +5,53 @@ title: Router Migration
 
 # Router Migration Guide
 
-This guide walks through moving from the legacy `RouterStack`/`Route.on()` API to the
-new `RouterRoot`/`RouteGroup`/`Route` system.
+The router system is now centered around `RouterRoot`, `RouteGroup`, and `RoutePolicy`.
+This guide covers the current, recommended API.
 
-## Quick Mapping
-
-- `RouterStack` -> `RouterRoot`
-- `Route.on('/path').render(Component)` -> `Route('/path', Component)`
-- `Route.notFound.render(Component)` -> `Route.notFound(Component)`
-- layout stays the same (`routerOutlet()`), but moves to the group
-- guard logic moves from `useEffect` to `RoutePolicy`
-
-## Before and After
-
-### Legacy
-
-```javascript
-import Swiftx, { RouterStack, Route } from 'swiftx';
-
-const App = () => RouterStack(
-  '/',
-  [
-    Route.on('/').render(Home),
-    Route.on('/account').render(Account),
-    Route.notFound.render(NotFound)
-  ],
-  AppLayout
-);
-```
-
-### New API
+## Basic Setup
 
 ```javascript
 import Swiftx from 'swiftx';
-import { RouterRoot, RouteGroup, Route, RoutePolicy } from 'swiftx/router';
+import { BrowserRouter } from 'swiftx/router';
+import App from './App.js';
+
+Swiftx.render(
+  Swiftx(BrowserRouter, {}, Swiftx(App)),
+  document.getElementById('root')
+);
+```
+
+## Defining Routes
+
+```javascript
+import { RouterRoot, RouteGroup, Route } from 'swiftx/router';
 
 const App = () => RouterRoot(
-  RouteGroup.root(
-    [
-      Route('/', Home),
-      Route('/account', Account)
-    ],
-    [],
-    AppLayout
-  ),
+  RouteGroup.root([
+    Route('/', Home),
+    Route('/account', Account)
+  ]),
   [
     Route.notFound(NotFound)
   ]
 );
 ```
 
-## Layouts with `routerOutlet`
+## Policies
 
-Layouts still receive `routerOutlet` and `navigation`, but are now defined per group:
+```javascript
+import { RoutePolicy } from 'swiftx/router';
+
+RouteGroup('/account', [
+  Route('/account', Account)
+], [
+  RoutePolicy(({ context, navigation }) => {
+    if (!context.user) navigation.replace('/login');
+  })
+]);
+```
+
+## Layouts with `routerOutlet`
 
 ```javascript
 const App = () => RouterRoot(
@@ -68,34 +62,7 @@ const App = () => RouterRoot(
 );
 ```
 
-## Replacing `useEffect` Guards with `RoutePolicy`
-
-Legacy guard logic often runs in `useEffect`:
-
-```javascript
-function Account({ navigation }) {
-  Swiftx.useEffect(() => {
-    if (!window.__user) navigation.replace('/login');
-  }, []);
-  return Swiftx('div', {}, 'Account');
-}
-```
-
-Use a group policy instead:
-
-```javascript
-RouteGroup('/account', [
-  Route('/account', Account)
-], [
-  RoutePolicy(({ context, navigation }) => {
-    if (!context.user) navigation.replace('/login');
-  })
-])
-```
-
 ## Context and Cookies
-
-Use `RouterRoot.Context` to merge defaults with app data:
 
 ```javascript
 const appContext = RouterRoot.Context({
@@ -112,28 +79,15 @@ Context always provides:
 - `context.set(key, value)`
 - `context.remove(key)`
 
-## Navigation Updates
+## Navigation
 
-New properties on the navigation object:
+- `navigation.path`
+- `navigation.params`
+- `navigation.group.rootPath`
 
-- `navigation.path` (current path string)
-- `navigation.params` (current params object)
-- `navigation.group.rootPath` (current group root)
-
-You can now redirect to special routes:
+Special redirects:
 
 ```javascript
 navigation.replace(Route.notFound);
 navigation.replace(Route.forbidden);
 ```
-
-Group history is isolated for `navigation.back()`; when history is empty it falls back
-to the current group root (or a provided fallback).
-
-## Test Adjustments
-
-- Prefer `RouterRoot` + `RouteGroup` in new tests.
-- Add group policy tests using `RoutePolicy`.
-- Validate `navigation.path`, `navigation.params`, and `navigation.group.rootPath` in
-  group routes.
-- For legacy tests, `RouterStack` continues to work unchanged.

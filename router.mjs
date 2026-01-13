@@ -1,6 +1,5 @@
 export {
     BrowserRouter,
-    RouterStack,
     RouterRoot,
     RouteGroup,
     RoutePolicy,

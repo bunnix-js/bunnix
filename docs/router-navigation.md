@@ -15,8 +15,6 @@ Matched components and layouts receive a scoped `navigation` object.
 - `navigation.path`
 - `navigation.params`
 - `navigation.group.rootPath`
-- `navigation.currentPath` (reactive state, legacy)
-- `navigation.rootPath`
 
 ## Using navigation in a Component
 
@@ -42,31 +40,9 @@ const Nav = ({ navigation }) => (
 );
 ```
 
-## Reactive Current Path
+## Redirects in Policies
 
-`navigation.currentPath` is a reactive state atom.
-
-```javascript
-function Breadcrumbs({ navigation }) {
-    return Swiftx('p', ['Path: ', navigation.currentPath]);
-}
-```
-
-## Redirects in useEffect
-
-`useEffect` runs immediately. If you redirect inside an effect, the current route will not render; Swiftx will navigate straight to the destination. In dev, Swiftx logs a warning if a render is superseded by a redirect.
-
-```javascript
-import Swiftx from 'swiftx';
-
-function GuardedRoute({ navigation }) {
-    Swiftx.useEffect(() => {
-        navigation.push('/login');
-    }, []);
-
-    return Swiftx('div', 'Protected content');
-}
-```
+Use `RoutePolicy` to perform redirects before rendering.
 
 ## Group History
 

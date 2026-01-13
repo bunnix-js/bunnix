@@ -8,22 +8,22 @@ import { Route } from './route.mjs';
 export const _routeState = Swiftx.State({ path: window.location.pathname });
 
 /**
- * Global counter used to validate that a RouterStack is present within a BrowserRouter.
+ * Global counter used to validate that a RouterRoot is present within a BrowserRouter.
  * @internal
  */
-export let _routerStackCount = 0;
+export let _routerRootCount = 0;
 
 /**
  * Resets the router stack counter.
  * @internal
  */
-export const resetRouterCount = () => _routerStackCount = 0;
+export const resetRouterCount = () => _routerRootCount = 0;
 
 /**
  * Increments the router stack counter.
  * @internal
  */
-export const incrementRouterCount = () => _routerStackCount++;
+export const incrementRouterCount = () => _routerRootCount++;
 
 // Convenience getter for current route state
 Object.defineProperty(_routeState, 'current', {
@@ -95,7 +95,7 @@ export const back = (fallback = '/') => {
 
 /**
  * Root router component that provides navigation context to the application.
- * Validates that at least one RouterStack is rendered within its tree.
+ * Validates that at least one RouterRoot is rendered within its tree.
  * 
  * @param {Object|Function} props - Props or direct child when called as function.
  * @param {Array} [children] - Children when used as a JSX component.
@@ -111,8 +111,8 @@ export const BrowserRouter = (props, children) => {
     const resolved = typeof content === 'function' ? Swiftx(content) : content;
 
     Swiftx.whenReady(() => {
-        if (_routerStackCount === 0 && isDev()) {
-            console.error("Swiftx.BrowserRouter: No RouterStack found inside the Router tree. Please add a RouterStack.");
+        if (_routerRootCount === 0 && isDev()) {
+            console.error("Swiftx.BrowserRouter: No RouterRoot found inside the Router tree. Please add a RouterRoot.");
         }
     });
 
