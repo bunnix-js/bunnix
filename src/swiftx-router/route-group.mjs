@@ -1,12 +1,23 @@
+const isPolicyLike = (value) => (
+    typeof value === 'function'
+    || (value && typeof value === 'object' && value.type === 'RoutePolicy')
+);
+
 const normalizeGroupArgs = (rootPath, routesOrComponent, policiesOrLayout, maybeLayout, isRoot) => {
     const isRouteArray = Array.isArray(routesOrComponent);
-    const routes = isRouteArray ? routesOrComponent : [];
+    const policiesOnly = isRouteArray && routesOrComponent.length > 0
+        && routesOrComponent.every(isPolicyLike);
+    const routes = isRouteArray && !policiesOnly ? routesOrComponent : [];
     const component = !isRouteArray && routesOrComponent ? routesOrComponent : null;
 
-    const policies = Array.isArray(policiesOrLayout) ? policiesOrLayout : [];
-    const layout = Array.isArray(policiesOrLayout)
-        ? (maybeLayout ?? null)
-        : (policiesOrLayout ?? null);
+    const policies = isRouteArray && policiesOnly
+        ? routesOrComponent
+        : Array.isArray(policiesOrLayout) ? policiesOrLayout : [];
+    const layout = isRouteArray && policiesOnly
+        ? (policiesOrLayout ?? null)
+        : Array.isArray(policiesOrLayout)
+            ? (maybeLayout ?? null)
+            : (policiesOrLayout ?? null);
 
     return {
         type: 'RouteGroup',
