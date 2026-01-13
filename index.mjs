@@ -19,6 +19,8 @@ import SwiftxRouter, {
     Link
 } from './src/swiftx-router/index.mjs';
 
+Swiftx.Router = SwiftxRouter;
+
 export default Swiftx;
 export {
     Swiftx,
