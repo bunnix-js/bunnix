@@ -48,6 +48,7 @@ export interface BunnixFactory {
     useMemo<T>(deps: State<any> | Array<State<any>>, compute: (...values: any[]) => T): ReadonlyState<T>;
     useRef<T = any>(): { current: T };
     render(component: any, container: Element): void;
+    toDOM(element: any, svgContext?: boolean): Node;
     whenReady(callback: () => void): void;
     Show(state: State<boolean> | ReadonlyState<boolean>, content: any): any;
     ForEach<T>(

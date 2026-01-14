@@ -115,6 +115,15 @@ const Panel = () => (
 - `Bunnix.whenReady(cb)`, `Bunnix.render(vdom, container)`
 - `Show(state, content)`, `Bunnix.ForEach(state, key, render)`
 
+## Low-level APIs
+
+`Bunnix.toDOM(vdom)` converts VDOM to a DOM node without diffing. It is a low-level utility intended for integrations (for example, routing).
+
+```js
+const node = Bunnix.toDOM(Bunnix('div', 'Hello'));
+document.body.appendChild(node);
+```
+
 ## Docs
 
 - Published documentation: https://bunnix-js.github.io/bunnix/

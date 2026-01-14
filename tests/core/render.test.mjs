@@ -8,6 +8,12 @@ test('Bunnix.render mounts content into a container', () => {
     assert.equal(container.querySelector('#root')?.textContent, 'Hello');
 });
 
+test('Bunnix.toDOM converts VDOM into a DOM node', () => {
+    const node = Bunnix.toDOM(Bunnix('div', { id: 'root' }, 'Hello'));
+    assert.ok(node instanceof Node);
+    assert.equal(node.textContent, 'Hello');
+});
+
 test('Bunnix renders SVG elements with the proper namespace', () => {
     const container = document.createElement('div');
     const view = Bunnix('svg', { width: '10', height: '10' }, [

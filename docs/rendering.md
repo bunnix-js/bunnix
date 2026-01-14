@@ -31,3 +31,14 @@ Bunnix.render(
     document.getElementById('root')
 );
 ```
+
+## Low-level: toDOM
+
+`Bunnix.toDOM(vdom)` converts VDOM into a DOM node without diffing. This is intended for advanced integrations, not typical app rendering.
+
+```javascript
+import Bunnix from '@bunnix/core';
+
+const node = Bunnix.toDOM(Bunnix('div', 'Hello'));
+document.body.appendChild(node);
+```
