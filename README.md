@@ -117,10 +117,17 @@ const Panel = () => (
 
 ## Low-level APIs
 
-`Bunnix.toDOM(vdom)` converts VDOM to a DOM node without diffing. It is a low-level utility intended for integrations (for example, routing).
+`Bunnix.toDOM(vdom)` converts VDOM to a DOM node without diffing. It is a low-level utility intended for integrations (for example, routing). You can also import it as a named export.
 
 ```js
 const node = Bunnix.toDOM(Bunnix('div', 'Hello'));
+document.body.appendChild(node);
+```
+
+```js
+import { toDOM } from '@bunnix/core';
+
+const node = toDOM(Bunnix('div', 'Hello'));
 document.body.appendChild(node);
 ```
 

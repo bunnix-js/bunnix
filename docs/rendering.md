@@ -42,3 +42,10 @@ import Bunnix from '@bunnix/core';
 const node = Bunnix.toDOM(Bunnix('div', 'Hello'));
 document.body.appendChild(node);
 ```
+
+```javascript
+import Bunnix, { toDOM } from '@bunnix/core';
+
+const node = toDOM(Bunnix('div', 'Hello'));
+document.body.appendChild(node);
+```
