@@ -17,7 +17,7 @@ export function Show(state, vdom) {
             const nextEl = bunnixToDOM(content)
             if (token !== renderToken) {
                 if (isDev()) {
-                    console.warn('[DEV] Bunnix.Show: render superseded by a newer update (possible redirect inside useEffect).');
+                    console.warn('[DEV] Bunnix.Show: render superseded by a newer update.');
                 }
                 return;
             }
@@ -40,7 +40,7 @@ export function Show(state, vdom) {
             frag.append(el)
         } else {
             if (isDev()) {
-                console.warn('[DEV] Bunnix.Show: render superseded by a newer update (possible redirect inside useEffect).');
+                console.warn('[DEV] Bunnix.Show: render superseded by a newer update.');
             }
         }
     }
