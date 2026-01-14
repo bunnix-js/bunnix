@@ -7,7 +7,7 @@ title: Bunnix Documentation
 
 ![Bunnix logo](./images/bunnix-transparent-regular.png)
 
-Ultra-lightweight reactive UI framework with a minimal router and keyed list rendering.
+Ultra-lightweight reactive UI framework with keyed list rendering.
 
 ## Start Here
 
@@ -17,7 +17,6 @@ Ultra-lightweight reactive UI framework with a minimal router and keyed list ren
 
 - ✨ Ultra-lightweight (minimal bundle size)
 - ⚡ Functional-first approach
-- 🔀 Built-in router
 - 📦 Single module package
 - 🎯 Keyed list rendering
 
@@ -42,17 +41,9 @@ npm install @bunnix/core
 - [JSX](./jsx.md) - optional JSX usage
 - [SVG Components](./svg.md) - inline SVG via SVGR
 
-### Router
-
-- [Router Overview](./router.md)
-- [Routes](./router-routes.md)
-- [Layouts](./router-layouts.md)
-- [Navigation](./router-navigation.md)
-
 ### Examples
 
 - [Examples Overview](./examples.md)
 - [Counter](./examples-counter.md)
 - [Todo List](./examples-todo.md)
-- [Router Layout](./examples-router-layout.md)
 - [Async Data](./examples-async.md)

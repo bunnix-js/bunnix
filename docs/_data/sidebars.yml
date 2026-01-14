@@ -27,17 +27,6 @@ docs:
       - title: JSX
         url: /bunnix/jsx
 
-  - title: Router
-    items:
-      - title: Router Overview
-        url: /bunnix/router
-      - title: Routes
-        url: /bunnix/router-routes
-      - title: Layouts
-        url: /bunnix/router-layouts
-      - title: Navigation
-        url: /bunnix/router-navigation
-
   - title: Examples
     items:
       - title: Examples Overview
@@ -46,7 +35,5 @@ docs:
         url: /bunnix/examples-counter
       - title: Todo List
         url: /bunnix/examples-todo
-      - title: Router Layout
-        url: /bunnix/examples-router-layout
       - title: Async Data
         url: /bunnix/examples-async

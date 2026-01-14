@@ -1,12 +1,14 @@
 import { Bunnix } from './factory.mjs';
 import { render } from './render.mjs';
+import { bunnixToDOM } from './dom.mjs';
 import { State, Effect, Compute } from './state.mjs';
 import { Show, ForEach } from './directives.mjs';
 
-/** @type {import('./index.d.ts').BunnixFactory} */
+/** @type {import('../@types/index.d.ts').BunnixFactory} */
 const BunnixNamespace = /** @type {any} */ (Bunnix);
 
 BunnixNamespace.render = render;
+BunnixNamespace.toDOM = bunnixToDOM;
 BunnixNamespace.State = State;
 BunnixNamespace.Effect = Effect;
 BunnixNamespace.Compute = Compute;
