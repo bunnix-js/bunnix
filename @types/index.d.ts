@@ -73,5 +73,6 @@ export const useMemo: typeof Compute;
 export const useRef: <T = any>() => { current: T };
 export const whenReady: (callback: () => void) => void;
 export const render: (component: any, container: Element) => void;
+export const toDOM: (element: any, svgContext?: boolean) => Node;
 export const Show: BunnixFactory['Show'];
 export const ForEach: BunnixFactory['ForEach'];

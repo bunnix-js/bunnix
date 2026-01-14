@@ -42,6 +42,7 @@ export const useEffect = Effect;
 export const useMemo = Compute;
 export const whenReady = BunnixNamespace.whenReady;
 export const useRef = BunnixNamespace.Ref;
+export const toDOM = bunnixToDOM;
 
 export { render, Show, ForEach, Compute };
 export default BunnixProxy;

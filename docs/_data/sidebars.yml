@@ -27,6 +27,11 @@ docs:
       - title: JSX
         url: /bunnix/jsx
 
+  - title: Comparisons
+    items:
+      - title: Bunnix Pitch Paper
+        url: /bunnix/bunnix-pitch-paper
+
   - title: Examples
     items:
       - title: Examples Overview

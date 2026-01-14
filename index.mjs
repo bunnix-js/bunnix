@@ -5,6 +5,7 @@ import Bunnix, {
     useRef,
     whenReady,
     render,
+    toDOM,
     Show,
     ForEach,
     Compute
@@ -18,6 +19,7 @@ export {
     useRef,
     whenReady,
     render,
+    toDOM,
     Show,
     ForEach,
     Compute
