@@ -1,6 +1,6 @@
 {
     "name": "@bunnix/core",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "description": "Bunnix: ultra-lightweight reactive UI framework with keyed list rendering",
     "license": "ISC",
     "author": "@bunnix",
