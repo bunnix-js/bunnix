@@ -145,7 +145,11 @@ export function ForEach(itemsState, keyOrOptions, render) {
                     entry.dom = nextDom;
                     entry.item = item;
                 }
-                moveRange(entry, anchor);
+                if (!entry.start.parentNode) {
+                    insertEntry(entry, anchor);
+                } else {
+                    moveRange(entry, anchor);
+                }
             }
         }
 
