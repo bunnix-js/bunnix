@@ -52,6 +52,16 @@ export function Show(state, vdom) {
  * Keyed list rendering with minimal diffing.
  */
 export function ForEach(itemsState, keyOrOptions, render) {
+    const debugLog = (event, data) => {
+        const entry = { event, ...data, at: Date.now() };
+        globalThis.__bunnixForEachLogs = globalThis.__bunnixForEachLogs || [];
+        globalThis.__bunnixForEachLogs.push(entry);
+        try {
+            console.log('[Bunnix.ForEach]', entry);
+        } catch {
+            // Ignore console failures in minified builds.
+        }
+    };
     const anchor = document.createComment('bunnix-foreach');
     const keyPath = typeof keyOrOptions === 'string'
         ? keyOrOptions
@@ -98,20 +108,20 @@ export function ForEach(itemsState, keyOrOptions, render) {
         const end = document.createComment('bunnix-foreach:end');
         const content = typeof render === 'function' ? render(item, index) : render;
         const dom = bunnixToDOM(content);
-        console.log('[DEV] Bunnix.ForEach: createEntry', { key, index, hasDom: !!dom });
+        debugLog('createEntry', { key, index, hasDom: !!dom });
         return { key, item, start, end, dom };
     };
 
     const insertEntry = (entry, beforeNode) => {
         const parent = beforeNode.parentNode;
         if (!parent) {
-            console.log('[DEV] Bunnix.ForEach: insertEntry skipped (no parent)', { key: entry.key });
+            debugLog('insertEntry:skipped', { key: entry.key });
             return;
         }
         parent.insertBefore(entry.start, beforeNode);
         parent.insertBefore(entry.dom, beforeNode);
         parent.insertBefore(entry.end, beforeNode);
-        console.log('[DEV] Bunnix.ForEach: insertEntry', { key: entry.key });
+        debugLog('insertEntry', { key: entry.key });
     };
 
     const removeEntry = (entry) => {
@@ -122,14 +132,14 @@ export function ForEach(itemsState, keyOrOptions, render) {
             if (node === entry.end) break;
             node = next;
         }
-        console.log('[DEV] Bunnix.ForEach: removeEntry', { key: entry.key });
+        debugLog('removeEntry', { key: entry.key });
     };
 
     let flushQueued = false;
 
     const flushPending = () => {
         if (!anchor.parentNode) {
-            console.log('[DEV] Bunnix.ForEach: flushPending skipped (no anchor parent)');
+            debugLog('flushPending:skipped', { reason: 'no-anchor-parent' });
             return false;
         }
         for (const entry of entries.values()) {
@@ -137,7 +147,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
                 insertEntry(entry, anchor);
             }
         }
-        console.log('[DEV] Bunnix.ForEach: flushPending complete', { entries: entries.size });
+        debugLog('flushPending:complete', { entries: entries.size });
         return true;
     };
 
@@ -155,7 +165,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
     const update = () => {
         const items = getItems();
         const nextKeys = new Set();
-        console.log('[DEV] Bunnix.ForEach: update start', {
+        debugLog('update:start', {
             items: items.length,
             entries: entries.size,
             anchorParent: !!anchor.parentNode
@@ -182,7 +192,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
                     entry.dom.replaceWith(nextDom);
                     entry.dom = nextDom;
                     entry.item = item;
-                    console.log('[DEV] Bunnix.ForEach: updated entry content', { key: entry.key });
+                    debugLog('entry:updated', { key: entry.key });
                 }
                 if (!entry.start.parentNode) {
                     insertEntry(entry, anchor);
@@ -202,7 +212,7 @@ export function ForEach(itemsState, keyOrOptions, render) {
         if (!flushPending()) {
             scheduleFlush();
         }
-        console.log('[DEV] Bunnix.ForEach: update end', { entries: entries.size });
+        debugLog('update:end', { entries: entries.size });
     };
 
     const state = itemsState && typeof itemsState.subscribe === 'function' ? itemsState : null;
