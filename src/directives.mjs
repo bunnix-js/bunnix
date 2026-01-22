@@ -8,6 +8,7 @@ export function Show(state, vdom) {
     const anchor = document.createComment('bunnix-show')
     let el = null
     let renderToken = 0
+    let lastVisible = null
 
     const update = (visible) => {
         const token = ++renderToken
@@ -28,10 +29,16 @@ export function Show(state, vdom) {
         }
     }
 
-    state.subscribe(update)
+    const initialVisible = state.get();
+    lastVisible = initialVisible;
+    state.subscribe((visible) => {
+        if (visible === lastVisible) return;
+        lastVisible = visible;
+        update(visible);
+    })
 
     const frag = document.createDocumentFragment()
-    if (state.get()) {
+    if (initialVisible) {
         const token = ++renderToken
         const content = typeof vdom === 'function' ? vdom() : vdom;
         const nextEl = bunnixToDOM(content)
@@ -119,6 +126,29 @@ export function ForEach(itemsState, keyOrOptions, render) {
         }
     };
 
+    let flushQueued = false;
+
+    const flushPending = () => {
+        if (!anchor.parentNode) return false;
+        for (const entry of entries.values()) {
+            if (!entry.start.parentNode) {
+                insertEntry(entry, anchor);
+            }
+        }
+        return true;
+    };
+
+    const scheduleFlush = () => {
+        if (flushQueued) return;
+        flushQueued = true;
+        queueMicrotask(() => {
+            flushQueued = false;
+            if (!flushPending()) {
+                scheduleFlush();
+            }
+        });
+    };
+
     const update = () => {
         const items = getItems();
         const nextKeys = new Set();
@@ -145,7 +175,11 @@ export function ForEach(itemsState, keyOrOptions, render) {
                     entry.dom = nextDom;
                     entry.item = item;
                 }
-                moveRange(entry, anchor);
+                if (!entry.start.parentNode) {
+                    insertEntry(entry, anchor);
+                } else {
+                    moveRange(entry, anchor);
+                }
             }
         }
 
@@ -155,6 +189,10 @@ export function ForEach(itemsState, keyOrOptions, render) {
                 entries.delete(key);
             }
         }
+
+        if (!flushPending()) {
+            scheduleFlush();
+        }
     };
 
     const state = itemsState && typeof itemsState.subscribe === 'function' ? itemsState : null;
@@ -162,6 +200,6 @@ export function ForEach(itemsState, keyOrOptions, render) {
 
     const frag = document.createDocumentFragment();
     frag.append(anchor);
-    queueMicrotask(update);
+    update();
     return frag;
 }
