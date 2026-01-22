@@ -3,6 +3,7 @@ export function State(value) {
     return {
         get: () => value,
         set: (v) => {
+            if (Object.is(v, value)) return;
             value = v;
             listeners.forEach(cb => cb(v))
         },
