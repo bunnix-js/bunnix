@@ -8,6 +8,7 @@ export function Show(state, vdom) {
     const anchor = document.createComment('bunnix-show')
     let el = null
     let renderToken = 0
+    let lastVisible = null
 
     const update = (visible) => {
         const token = ++renderToken
@@ -28,10 +29,16 @@ export function Show(state, vdom) {
         }
     }
 
-    state.subscribe(update)
+    const initialVisible = state.get();
+    lastVisible = initialVisible;
+    state.subscribe((visible) => {
+        if (visible === lastVisible) return;
+        lastVisible = visible;
+        update(visible);
+    })
 
     const frag = document.createDocumentFragment()
-    if (state.get()) {
+    if (initialVisible) {
         const token = ++renderToken
         const content = typeof vdom === 'function' ? vdom() : vdom;
         const nextEl = bunnixToDOM(content)
@@ -52,16 +59,6 @@ export function Show(state, vdom) {
  * Keyed list rendering with minimal diffing.
  */
 export function ForEach(itemsState, keyOrOptions, render) {
-    const debugLog = (event, data) => {
-        const entry = { event, ...data, at: Date.now() };
-        globalThis.__bunnixForEachLogs = globalThis.__bunnixForEachLogs || [];
-        globalThis.__bunnixForEachLogs.push(entry);
-        try {
-            console.log('[Bunnix.ForEach]', entry);
-        } catch {
-            // Ignore console failures in minified builds.
-        }
-    };
     const anchor = document.createComment('bunnix-foreach');
     const keyPath = typeof keyOrOptions === 'string'
         ? keyOrOptions
@@ -108,20 +105,15 @@ export function ForEach(itemsState, keyOrOptions, render) {
         const end = document.createComment('bunnix-foreach:end');
         const content = typeof render === 'function' ? render(item, index) : render;
         const dom = bunnixToDOM(content);
-        debugLog('createEntry', { key, index, hasDom: !!dom });
         return { key, item, start, end, dom };
     };
 
     const insertEntry = (entry, beforeNode) => {
         const parent = beforeNode.parentNode;
-        if (!parent) {
-            debugLog('insertEntry:skipped', { key: entry.key });
-            return;
-        }
+        if (!parent) return;
         parent.insertBefore(entry.start, beforeNode);
         parent.insertBefore(entry.dom, beforeNode);
         parent.insertBefore(entry.end, beforeNode);
-        debugLog('insertEntry', { key: entry.key });
     };
 
     const removeEntry = (entry) => {
@@ -132,22 +124,17 @@ export function ForEach(itemsState, keyOrOptions, render) {
             if (node === entry.end) break;
             node = next;
         }
-        debugLog('removeEntry', { key: entry.key });
     };
 
     let flushQueued = false;
 
     const flushPending = () => {
-        if (!anchor.parentNode) {
-            debugLog('flushPending:skipped', { reason: 'no-anchor-parent' });
-            return false;
-        }
+        if (!anchor.parentNode) return false;
         for (const entry of entries.values()) {
             if (!entry.start.parentNode) {
                 insertEntry(entry, anchor);
             }
         }
-        debugLog('flushPending:complete', { entries: entries.size });
         return true;
     };
 
@@ -165,11 +152,6 @@ export function ForEach(itemsState, keyOrOptions, render) {
     const update = () => {
         const items = getItems();
         const nextKeys = new Set();
-        debugLog('update:start', {
-            items: items.length,
-            entries: entries.size,
-            anchorParent: !!anchor.parentNode
-        });
 
         for (let index = 0; index < items.length; index++) {
             const item = items[index];
@@ -192,7 +174,6 @@ export function ForEach(itemsState, keyOrOptions, render) {
                     entry.dom.replaceWith(nextDom);
                     entry.dom = nextDom;
                     entry.item = item;
-                    debugLog('entry:updated', { key: entry.key });
                 }
                 if (!entry.start.parentNode) {
                     insertEntry(entry, anchor);
@@ -212,7 +193,6 @@ export function ForEach(itemsState, keyOrOptions, render) {
         if (!flushPending()) {
             scheduleFlush();
         }
-        debugLog('update:end', { entries: entries.size });
     };
 
     const state = itemsState && typeof itemsState.subscribe === 'function' ? itemsState : null;
