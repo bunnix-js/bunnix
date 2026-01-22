@@ -119,6 +119,29 @@ export function ForEach(itemsState, keyOrOptions, render) {
         }
     };
 
+    let flushQueued = false;
+
+    const flushPending = () => {
+        if (!anchor.parentNode) return false;
+        for (const entry of entries.values()) {
+            if (!entry.start.parentNode) {
+                insertEntry(entry, anchor);
+            }
+        }
+        return true;
+    };
+
+    const scheduleFlush = () => {
+        if (flushQueued) return;
+        flushQueued = true;
+        queueMicrotask(() => {
+            flushQueued = false;
+            if (!flushPending()) {
+                scheduleFlush();
+            }
+        });
+    };
+
     const update = () => {
         const items = getItems();
         const nextKeys = new Set();
@@ -159,6 +182,10 @@ export function ForEach(itemsState, keyOrOptions, render) {
                 entries.delete(key);
             }
         }
+
+        if (!flushPending()) {
+            scheduleFlush();
+        }
     };
 
     const state = itemsState && typeof itemsState.subscribe === 'function' ? itemsState : null;
@@ -166,6 +193,6 @@ export function ForEach(itemsState, keyOrOptions, render) {
 
     const frag = document.createDocumentFragment();
     frag.append(anchor);
-    queueMicrotask(update);
+    update();
     return frag;
 }
