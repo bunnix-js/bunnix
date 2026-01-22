@@ -98,15 +98,26 @@ export function ForEach(itemsState, keyOrOptions, render) {
         const end = document.createComment('bunnix-foreach:end');
         const content = typeof render === 'function' ? render(item, index) : render;
         const dom = bunnixToDOM(content);
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: createEntry', { key, index, hasDom: !!dom });
+        }
         return { key, item, start, end, dom };
     };
 
     const insertEntry = (entry, beforeNode) => {
         const parent = beforeNode.parentNode;
-        if (!parent) return;
+        if (!parent) {
+            if (isDev()) {
+                console.log('[DEV] Bunnix.ForEach: insertEntry skipped (no parent)', { key: entry.key });
+            }
+            return;
+        }
         parent.insertBefore(entry.start, beforeNode);
         parent.insertBefore(entry.dom, beforeNode);
         parent.insertBefore(entry.end, beforeNode);
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: insertEntry', { key: entry.key });
+        }
     };
 
     const removeEntry = (entry) => {
@@ -117,16 +128,27 @@ export function ForEach(itemsState, keyOrOptions, render) {
             if (node === entry.end) break;
             node = next;
         }
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: removeEntry', { key: entry.key });
+        }
     };
 
     let flushQueued = false;
 
     const flushPending = () => {
-        if (!anchor.parentNode) return false;
+        if (!anchor.parentNode) {
+            if (isDev()) {
+                console.log('[DEV] Bunnix.ForEach: flushPending skipped (no anchor parent)');
+            }
+            return false;
+        }
         for (const entry of entries.values()) {
             if (!entry.start.parentNode) {
                 insertEntry(entry, anchor);
             }
+        }
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: flushPending complete', { entries: entries.size });
         }
         return true;
     };
@@ -145,6 +167,13 @@ export function ForEach(itemsState, keyOrOptions, render) {
     const update = () => {
         const items = getItems();
         const nextKeys = new Set();
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: update start', {
+                items: items.length,
+                entries: entries.size,
+                anchorParent: !!anchor.parentNode
+            });
+        }
 
         for (let index = 0; index < items.length; index++) {
             const item = items[index];
@@ -167,6 +196,9 @@ export function ForEach(itemsState, keyOrOptions, render) {
                     entry.dom.replaceWith(nextDom);
                     entry.dom = nextDom;
                     entry.item = item;
+                    if (isDev()) {
+                        console.log('[DEV] Bunnix.ForEach: updated entry content', { key: entry.key });
+                    }
                 }
                 if (!entry.start.parentNode) {
                     insertEntry(entry, anchor);
@@ -185,6 +217,9 @@ export function ForEach(itemsState, keyOrOptions, render) {
 
         if (!flushPending()) {
             scheduleFlush();
+        }
+        if (isDev()) {
+            console.log('[DEV] Bunnix.ForEach: update end', { entries: entries.size });
         }
     };
 

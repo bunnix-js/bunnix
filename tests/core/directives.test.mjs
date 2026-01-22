@@ -302,3 +302,52 @@ test('ForEach handles array recreation with a deleted keyed item', async () => {
     assert.equal(container.querySelector('#item-3')?.textContent, 'C C.1');
     assert.equal(container.querySelector('#item-2'), null);
 });
+
+test('ForEach renders useMemo results from mapped root state', async () => {
+    const root = useState({ accounts: [], participants: [] });
+    const accounts = root.map((state) => state.accounts);
+    const participants = root.map((state) => state.participants);
+
+    const accountsWithParticipants = useMemo([accounts, participants], (acc, ptt) => (
+        acc.map((a) => ({
+            id: a.id,
+            name: a.name,
+            participants: ptt
+                .filter((p) => p.accountId === a.id)
+                .map((p) => p.name)
+                .join(', ')
+        }))
+    ));
+
+    const List = () => (
+        Bunnix('ul', {}, ForEach(accountsWithParticipants, 'id', (account) => (
+            Bunnix('li', { id: `account-${account.id}` }, [
+                account.name,
+                ' ',
+                account.participants
+            ])
+        )))
+    );
+
+    const container = document.createElement('div');
+    Bunnix.render(List, container);
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    root.set({
+        accounts: [
+            { id: 1, name: 'Main' },
+            { id: 2, name: 'Ops' }
+        ],
+        participants: [
+            { accountId: 1, name: 'Ada' },
+            { accountId: 2, name: 'Bob' },
+            { accountId: 1, name: 'Cara' }
+        ]
+    });
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    const first = container.querySelector('#account-1');
+    const second = container.querySelector('#account-2');
+    assert.equal(first?.textContent, 'Main Ada, Cara');
+    assert.equal(second?.textContent, 'Ops Bob');
+});
