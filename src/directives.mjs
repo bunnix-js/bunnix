@@ -14,7 +14,7 @@ export function Show(state, vdom) {
         const token = ++renderToken
         if (visible) {
             if (el) el.remove();
-            const content = typeof vdom === 'function' ? vdom() : vdom;
+            const content = typeof vdom === 'function' ? vdom(visible) : vdom;
             const nextEl = bunnixToDOM(content)
             if (token !== renderToken) {
                 if (isDev()) {
@@ -40,7 +40,7 @@ export function Show(state, vdom) {
     const frag = document.createDocumentFragment()
     if (initialVisible) {
         const token = ++renderToken
-        const content = typeof vdom === 'function' ? vdom() : vdom;
+        const content = typeof vdom === 'function' ? vdom(initialVisible) : vdom;
         const nextEl = bunnixToDOM(content)
         if (token === renderToken) {
             el = nextEl

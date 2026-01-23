@@ -1,139 +1,90 @@
-# Improvement Plan: Reactive `useRef`
+# Improvement Plan: Enhanced `Show` Directive
 
 ## Goal
-Transform `useRef` from a static object `{ current: null }` into a reactive primitive backed by `State`. This allows effects to subscribe to changes (like DOM attachment).
+Update the `Show` directive to support passing the unwrapped state value to the render function. This allows `Show` to act as a reactive container that can render different content based on the state's value, not just toggle visibility.
 
-## Constraints
-- `.current` must **not** be implemented as a getter/setter or Proxy. It should be a plain property.
-- The value of `.current` must be kept in sync with the internal state value.
+## Scenario
+The user wants to achieve this pattern:
+```javascript
+Show(
+  someStringState.map(value => (!value) || (value === "") ? "Empty String" : value),
+  (value) => <span>{value}</span> 
+)
+```
+
+In this scenario:
+1.  The mapped state returns either `"Empty String"` or the actual string value.
+2.  Both are "truthy" (non-empty strings).
+3.  `Show` should render the component and pass this string to the callback: `(value) => <span>{value}</span>`.
+
+## Current Implementation
+Currently, `src/directives.mjs` calls the render function without arguments:
+```javascript
+const content = typeof vdom === 'function' ? vdom() : vdom;
+```
 
 ## Proposed Technical Changes
 
-### 1. Create `RefState` in `src/state.mjs`
-Create `RefState` which returns a **read-only** reactive object (no public `.set` method). To allow the framework to update the ref, we will use a global Symbol `Symbol.for('bunnix.ref.set')`.
+### 1. Update `Show` in `src/directives.mjs`
+Modify the `update` function (and the initial render block) to pass the current state value (`visible`) to the `vdom` function.
 
-**Logic:**
+**Change:**
 ```javascript
-export function RefState(initialValue) {
-    const listeners = [];
-    let value = initialValue;
+// Old
+const content = typeof vdom === 'function' ? vdom() : vdom;
 
-    const setter = (v) => {
-        if (Object.is(v, value)) return;
-        value = v;
-        state.current = v; // Sync plain property
-        listeners.forEach(cb => cb(v));
-    };
-
-    const state = {
-        // Plain property, synced manually
-        current: value,
-
-        // Standard Read-Only State interface
-        get: () => value,
-        subscribe: (cb) => {
-            listeners.push(cb);
-            return () => {
-                const i = listeners.indexOf(cb);
-                if (i > -1) listeners.splice(i, 1);
-            };
-        },
-        
-        // Internal setter for framework use only
-        [Symbol.for('bunnix.ref.set')]: setter
-    };
-    return state;
-}
+// New
+const content = typeof vdom === 'function' ? vdom(visible) : vdom;
 ```
 
-### 2. Update `BunnixNamespace.Ref`
-Update `BunnixNamespace.Ref` in `src/index.mjs` to use `RefState`.
-
-```javascript
-import { RefState } from './state.mjs';
-// ...
-BunnixNamespace.Ref = (initialValue) => RefState(initialValue);
-```
-
-### 3. Update `bunnixToDOM` in `src/dom.mjs`
-Update the ref assignment logic to check for the internal setter symbol.
-
-```javascript
-const REF_SET_SYMBOL = Symbol.for('bunnix.ref.set');
-
-// ... inside bunnixToDOM loop ...
-if (key === 'ref') {
-    if (value && typeof value[REF_SET_SYMBOL] === 'function') {
-        value[REF_SET_SYMBOL](node);
-    } else if (typeof value.set === 'function') {
-        // Fallback if we decide to support writable refs or older interface
-        value.set(node);
-    } else {
-        // Fallback for plain objects
-        value.current = node;
-    }
-    continue
-}
-```
-
-## Impact
-- **Reading:** `ref.current` returns the value (plain property).
-- **Writing (System):** `bunnixToDOM` calls `ref[Symbol.for('bunnix.ref.set')](node)`, triggering effects.
-- **Writing (User):** User cannot trigger reactive updates because `.set` is not exposed. Setting `ref.current = newValue` manually will update the property but **not** trigger effects (and will be overwritten by the system on next render).
-- **Reactivity:** `useEffect` works because `ref` is a `State`-like object (has `.subscribe`).
+### 2. Logic Analysis
+- **Truthy State:** If the state is truthy (e.g., "Hello", "Empty String"), `Show` enters the "render" branch. It calls `vdom("Hello")`. The user's function receives "Hello" and returns the VDOM.
+- **Falsy State:** If the state is falsy (e.g., `null`, `false`, `0`), `Show` enters the "remove" branch (`else if (!visible && el) ...`). The `vdom` function is **not** called. This preserves the conditional rendering nature of `Show`.
+- **Optimization:** The existing check `if (visible === lastVisible) return;` ensures we only re-render if the value actually changes.
 
 ## Verification Plan
 
-### Planned Unit Tests (Proto-code)
-
-**Test 1: Reactivity & Read-Only Check**
+### Test Case: Value Passing
 ```javascript
-test('useRef is reactive and read-only', async () => {
+test('Show passes state value to render function', () => {
+    const name = useState('Alice');
     const container = document.createElement('div');
-    const log = [];
+
+    // Use mapped state that is always truthy to test value passing
+    const derived = name.map(n => n || 'Anonymous');
     
-    // 1. Setup Component with Ref and Effect
-    const App = () => {
-        const divRef = useRef(null);
-        
-        // Should run when ref changes (initial render -> attach)
-        useEffect((node) => {
-            log.push(node ? node.tagName : 'null');
-        }, [divRef]);
+    const App = () => Show(
+        derived,
+        (val) => Bunnix('span', {}, `Hello ${val}`)
+    );
 
-        // Security Check: User cannot set it
-        if (divRef.set) throw new Error('Ref should be read-only!');
-
-        return Bunnix('div', { ref: divRef, id: 'target' });
-    };
-
-    // 2. Render
     render(App, container);
+    assert.equal(container.textContent, 'Hello Alice');
+
+    name.set(''); // Maps to 'Anonymous'
+    assert.equal(container.textContent, 'Hello Anonymous');
     
-    // 3. Verify Effect ran with the node
-    assert.deepEqual(log, ['DIV']);
-    
-    // 4. Verify ref.current is correct
-    const divRef = ... // capture ref from component if needed, or check side effects
+    name.set('Bob');
+    assert.equal(container.textContent, 'Hello Bob');
 });
 ```
 
-**Test 2: Manual .current assignment (No Reactivity)**
+### Test Case: Falsy Value (No Render)
+Ensure that if the value is actually falsy, it still hides.
 ```javascript
-test('Manual ref.current assignment does not trigger reactivity', () => {
-    const ref = useRef(null);
-    let count = 0;
-    ref.subscribe(() => count++);
+test('Show hides content on falsy value even with arg', () => {
+    const show = useState(true);
+    const container = document.createElement('div');
+    
+    const App = () => Show(
+        show,
+        (val) => Bunnix('div', {}, String(val))
+    );
 
-    // Manual set - acts as plain prop, no broadcast
-    ref.current = 'fake'; 
-    assert.equal(count, 0); 
-    assert.equal(ref.current, 'fake');
+    render(App, container);
+    assert.ok(container.querySelector('div'));
 
-    // System set (via Symbol) triggers update
-    const setter = ref[Symbol.for('bunnix.ref.set')];
-    setter('real');
-    assert.equal(count, 1);
-    assert.equal(ref.current, 'real');
+    show.set(false);
+    assert.equal(container.querySelector('div'), null);
 });
 ```
