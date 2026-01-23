@@ -1,10 +1,18 @@
 import { bunnixToDOM } from './dom.mjs';
 import { isDev } from './dev.mjs';
 
+function validateState(val, contextName) {
+    if (!val || typeof val.get !== 'function' || typeof val.subscribe !== 'function') {
+        const type = val === null ? 'null' : typeof val;
+        throw new Error(`[Bunnix] ${contextName}: Expected a State object but received ${type}. Primitives/Values are not supported.`);
+    }
+}
+
 /**
  * Conditional rendering
  */
 export function Show(state, vdom) {
+    validateState(state, 'Show');
     const anchor = document.createComment('bunnix-show')
     let el = null
     let renderToken = 0
@@ -59,6 +67,10 @@ export function Show(state, vdom) {
  * Keyed list rendering with minimal diffing.
  */
 export function ForEach(itemsState, keyOrOptions, render) {
+    if (!Array.isArray(itemsState)) {
+        validateState(itemsState, 'ForEach');
+    }
+
     const anchor = document.createComment('bunnix-foreach');
     const keyPath = typeof keyOrOptions === 'string'
         ? keyOrOptions

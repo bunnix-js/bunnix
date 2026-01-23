@@ -22,12 +22,20 @@ export function State(value) {
     }
 }
 
+function validateState(val, contextName) {
+    if (!val || typeof val.get !== 'function' || typeof val.subscribe !== 'function') {
+        const type = val === null ? 'null' : typeof val;
+        throw new Error(`[Bunnix] ${contextName}: Expected a State object but received ${type}. Primitives/Values are not supported.`);
+    }
+}
+
 export function Effect(cb, deps) {
     const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
-    const states = rawDeps.filter(s => s && typeof s.get === 'function' && typeof s.subscribe === 'function')
-    const disposers = states.map(s => s.subscribe(cb))
+    rawDeps.forEach((s, i) => validateState(s, `Effect dependency at index ${i}`))
+    
+    const disposers = rawDeps.map(s => s.subscribe(cb))
 
-    const firstStateValue = states.length === 1 ? states[0].get() : undefined
+    const firstStateValue = rawDeps.length === 1 ? rawDeps[0].get() : undefined
     cb(firstStateValue)
 
     return () => disposers.forEach(d => d?.())
@@ -41,15 +49,16 @@ const toReadonly = (state) => ({
 
 export function Compute(deps, fn) {
     const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
-    const states = rawDeps.filter(s => s && typeof s.get === 'function' && typeof s.subscribe === 'function')
-    const computeValue = () => fn(...states.map(s => s.get()))
+    rawDeps.forEach((s, i) => validateState(s, `Compute/useMemo dependency at index ${i}`))
+    
+    const computeValue = () => fn(...rawDeps.map(s => s.get()))
     const derived = State(computeValue())
 
     const update = () => {
         derived.set(computeValue())
     }
 
-    states.forEach(s => s.subscribe(update))
+    rawDeps.forEach(s => s.subscribe(update))
 
     return toReadonly(derived)
 }
