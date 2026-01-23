@@ -53,3 +53,30 @@ export function Compute(deps, fn) {
 
     return toReadonly(derived)
 }
+
+export function RefState(initialValue) {
+    const listeners = []
+    let value = initialValue
+
+    const setter = (v) => {
+        if (Object.is(v, value)) return;
+        value = v;
+        state.current = v;
+        listeners.forEach(cb => cb(v))
+    }
+
+    const state = {
+        current: value,
+        get: () => value,
+        subscribe: (cb) => {
+            listeners.push(cb)
+            return () => {
+                const i = listeners.indexOf(cb)
+                if (i > -1) listeners.splice(i, 1)
+            }
+        },
+        [Symbol.for('bunnix.ref.set')]: setter
+    }
+
+    return state
+}

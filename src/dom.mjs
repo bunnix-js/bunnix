@@ -65,7 +65,12 @@ export function bunnixToDOM(element, svgContext = false) {
     if (element.props) {
         for (const [key, value] of Object.entries(element.props)) {
             if (key === 'ref') {
-                value.current = node
+                const REF_SET_SYMBOL = Symbol.for('bunnix.ref.set');
+                if (value && typeof value[REF_SET_SYMBOL] === 'function') {
+                    value[REF_SET_SYMBOL](node);
+                } else {
+                    value.current = node;
+                }
                 continue
             }
             if (key === 'style' && typeof value === 'object') {
