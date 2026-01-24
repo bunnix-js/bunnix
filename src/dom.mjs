@@ -42,7 +42,10 @@ export function bunnixToDOM(element, svgContext = false) {
 
     // Execute functional components
     if (typeof element.tag === 'function') {
-        return bunnixToDOM(element.tag(element.props, element.children), svgContext)
+        const props = element.props || {}
+        const children = element.children || []
+        const propsWithChildren = { ...props, children }
+        return bunnixToDOM(element.tag(propsWithChildren, children), svgContext)
     }
 
     // Pass through real DOM nodes
