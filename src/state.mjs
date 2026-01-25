@@ -48,19 +48,26 @@ const toReadonly = (state) => ({
 });
 
 export function Compute(deps, fn) {
-    const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
-    rawDeps.forEach((s, i) => validateState(s, `Compute/useMemo dependency at index ${i}`))
-    
-    const computeValue = () => fn(...rawDeps.map(s => s.get()))
-    const derived = State(computeValue())
+    const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : [];
+
+    const isState = (s) => s && typeof s.get === 'function' && typeof s.subscribe === 'function';
+
+    const getValues = () => rawDeps.map(dep => isState(dep) ? dep.get() : dep);
+
+    const derived = State(fn(...getValues()));
 
     const update = () => {
-        derived.set(computeValue())
-    }
+        derived.set(fn(...getValues()));
+    };
 
-    rawDeps.forEach(s => s.subscribe(update))
+    // Only subscribe to the actual states
+    rawDeps.forEach(dep => {
+        if (isState(dep)) {
+            dep.subscribe(update);
+        }
+    });
 
-    return toReadonly(derived)
+    return toReadonly(derived);
 }
 
 export function RefState(initialValue) {

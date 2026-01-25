@@ -12,12 +12,6 @@ test('Effect throws when dependency is a primitive', () => {
     }, /Expected a State object but received string/);
 });
 
-test('Compute/useMemo throws when dependency is a primitive', () => {
-    assert.throws(() => {
-        useMemo([123], () => {});
-    }, /Expected a State object but received number/);
-});
-
 test('Show throws when state is a primitive', () => {
     assert.throws(() => {
         Show(true, () => {});

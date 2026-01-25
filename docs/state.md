@@ -49,18 +49,33 @@ const unsubscribe = count.subscribe((value) => {
 
 ## Computed State (Compute / useMemo)
 
-Use `Bunnix.Compute` (or `useMemo`) to derive a read-only state atom from one or more states.
+Use `Bunnix.Compute` (or `useMemo`) to derive a read-only state atom from one or more dependencies. The dependency array can include both **State objects** and **plain values** (like arrays, strings, or numbers). The memoized function will only re-run when the *State* dependencies change.
 
+### Example: Combining States
 ```javascript
 const first = Bunnix.useState('Ada');
 const last = Bunnix.useState('Lovelace');
 
-const fullName = Bunnix.Compute([first, last], (a, b) => `${a} ${b}`);
-// or: const fullName = Bunnix.useMemo([first, last], (a, b) => `${a} ${b}`);
+const fullName = Bunnix.useMemo([first, last], (a, b) => `${a} ${b}`);
 
 const View = () => (
     Bunnix('p', ['Name: ', fullName])
 );
+```
+
+### Example: Filtering a Plain Array
+`useMemo` is perfect for filtering or transforming plain data using reactive state.
+
+```javascript
+const data = ['Apple', 'Banana', 'Avocado', 'Orange'];
+const searchText = Bunnix.useState('');
+
+const filteredData = Bunnix.useMemo(
+  [searchText, data], // Mix of State and plain array
+  (text, allItems) => allItems.filter(item => item.toLowerCase().includes(text.toLowerCase()))
+);
+
+// `filteredData` is a new reactive State that ForEach can subscribe to
 ```
 
 ## Reactive Props
