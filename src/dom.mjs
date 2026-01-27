@@ -42,7 +42,10 @@ export function bunnixToDOM(element, svgContext = false) {
 
     // Execute functional components
     if (typeof element.tag === 'function') {
-        return bunnixToDOM(element.tag(element.props, element.children), svgContext)
+        const props = element.props || {}
+        const children = element.children || []
+        const propsWithChildren = { ...props, children }
+        return bunnixToDOM(element.tag(propsWithChildren, children), svgContext)
     }
 
     // Pass through real DOM nodes
@@ -65,7 +68,12 @@ export function bunnixToDOM(element, svgContext = false) {
     if (element.props) {
         for (const [key, value] of Object.entries(element.props)) {
             if (key === 'ref') {
-                value.current = node
+                const REF_SET_SYMBOL = Symbol.for('bunnix.ref.set');
+                if (value && typeof value[REF_SET_SYMBOL] === 'function') {
+                    value[REF_SET_SYMBOL](node);
+                } else {
+                    value.current = node;
+                }
                 continue
             }
             if (key === 'style' && typeof value === 'object') {

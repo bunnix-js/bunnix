@@ -1,7 +1,7 @@
 import { Bunnix } from './factory.mjs';
 import { render } from './render.mjs';
 import { bunnixToDOM } from './dom.mjs';
-import { State, Effect, Compute } from './state.mjs';
+import { State, Effect, Compute, RefState } from './state.mjs';
 import { Show, ForEach } from './directives.mjs';
 
 /** @type {import('../@types/index.d.ts').BunnixFactory} */
@@ -14,7 +14,7 @@ BunnixNamespace.Effect = Effect;
 BunnixNamespace.Compute = Compute;
 BunnixNamespace.Show = Show;
 BunnixNamespace.ForEach = ForEach;
-BunnixNamespace.Ref = () => ({ current: null });
+BunnixNamespace.Ref = (initialValue = null) => RefState(initialValue);
 BunnixNamespace.whenReady = (cb) => queueMicrotask(cb);
 
 // Attach aliases

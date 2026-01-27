@@ -22,12 +22,20 @@ export function State(value) {
     }
 }
 
+function validateState(val, contextName) {
+    if (!val || typeof val.get !== 'function' || typeof val.subscribe !== 'function') {
+        const type = val === null ? 'null' : typeof val;
+        throw new Error(`[Bunnix] ${contextName}: Expected a State object but received ${type}. Primitives/Values are not supported.`);
+    }
+}
+
 export function Effect(cb, deps) {
     const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
-    const states = rawDeps.filter(s => s && typeof s.get === 'function' && typeof s.subscribe === 'function')
-    const disposers = states.map(s => s.subscribe(cb))
+    rawDeps.forEach((s, i) => validateState(s, `Effect dependency at index ${i}`))
+    
+    const disposers = rawDeps.map(s => s.subscribe(cb))
 
-    const firstStateValue = states.length === 1 ? states[0].get() : undefined
+    const firstStateValue = rawDeps.length === 1 ? rawDeps[0].get() : undefined
     cb(firstStateValue)
 
     return () => disposers.forEach(d => d?.())
@@ -40,16 +48,51 @@ const toReadonly = (state) => ({
 });
 
 export function Compute(deps, fn) {
-    const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : []
-    const states = rawDeps.filter(s => s && typeof s.get === 'function' && typeof s.subscribe === 'function')
-    const computeValue = () => fn(...states.map(s => s.get()))
-    const derived = State(computeValue())
+    const rawDeps = deps ? (Array.isArray(deps) ? deps : [deps]) : [];
+
+    const isState = (s) => s && typeof s.get === 'function' && typeof s.subscribe === 'function';
+
+    const getValues = () => rawDeps.map(dep => isState(dep) ? dep.get() : dep);
+
+    const derived = State(fn(...getValues()));
 
     const update = () => {
-        derived.set(computeValue())
+        derived.set(fn(...getValues()));
+    };
+
+    // Only subscribe to the actual states
+    rawDeps.forEach(dep => {
+        if (isState(dep)) {
+            dep.subscribe(update);
+        }
+    });
+
+    return toReadonly(derived);
+}
+
+export function RefState(initialValue) {
+    const listeners = []
+    let value = initialValue
+
+    const setter = (v) => {
+        if (Object.is(v, value)) return;
+        value = v;
+        state.current = v;
+        listeners.forEach(cb => cb(v))
     }
 
-    states.forEach(s => s.subscribe(update))
+    const state = {
+        current: value,
+        get: () => value,
+        subscribe: (cb) => {
+            listeners.push(cb)
+            return () => {
+                const i = listeners.indexOf(cb)
+                if (i > -1) listeners.splice(i, 1)
+            }
+        },
+        [Symbol.for('bunnix.ref.set')]: setter
+    }
 
-    return toReadonly(derived)
+    return state
 }
