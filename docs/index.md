@@ -47,3 +47,7 @@ npm install @bunnix/core
 - [Counter](./examples-counter.md)
 - [Todo List](./examples-todo.md)
 - [Async Data](./examples-async.md)
+
+### Troubleshooting
+
+- [Troubleshooting](./troubleshooting.md) - help for performance-sensitive patterns like `ForEach` in huge lists.
