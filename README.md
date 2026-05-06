@@ -98,12 +98,14 @@ const ExpenseList = () => (
 
 ```js
 import Bunnix, { Show } from '@bunnix/core';
-const isVisible = Bunnix.useState(false);
+const selectedUser = Bunnix.useState(null);
 
 const Panel = () => (
     Bunnix('div', [
-        Show(isVisible, () => Bunnix('p', 'Now you see me')),
-        Bunnix('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
+        Show(selectedUser, (user) => Bunnix('p', `Selected: ${user.name}`)),
+        Bunnix('button', {
+            click: () => selectedUser.set({ id: 1, name: 'Avery' })
+        }, 'Select User')
     ])
 );
 ```

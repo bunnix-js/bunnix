@@ -24,6 +24,28 @@ test('Show passes state value to render function', () => {
     assert.equal(container.textContent, 'Hello Bob');
 });
 
+test('Show passes object state value to render function', () => {
+    const selectedAgent = useState(null);
+    const container = document.createElement('div');
+
+    const App = () => Show(
+        selectedAgent,
+        (agent) => Bunnix('div', { id: `agent-${agent.id}` }, agent.name)
+    );
+
+    render(App, container);
+    assert.equal(container.querySelector('div'), null);
+
+    selectedAgent.set({ id: 42, name: 'Scout' });
+    assert.equal(container.querySelector('#agent-42')?.textContent, 'Scout');
+
+    selectedAgent.set({ id: 99, name: 'Atlas' });
+    assert.equal(container.querySelector('#agent-99')?.textContent, 'Atlas');
+
+    selectedAgent.set(null);
+    assert.equal(container.querySelector('div'), null);
+});
+
 test('Show hides content on falsy value even with arg', () => {
     const show = useState(true);
     const container = document.createElement('div');

@@ -50,7 +50,7 @@ export interface BunnixFactory {
     render(component: any, container: Element): void;
     toDOM(element: any, svgContext?: boolean): Node;
     whenReady(callback: () => void): void;
-    Show(state: State<boolean> | ReadonlyState<boolean>, content: any): any;
+    Show<T>(state: State<T> | ReadonlyState<T>, content: ((value: NonNullable<T>) => any) | any): any;
     ForEach<T>(
         items: State<T[]> | ReadonlyState<T[]> | T[],
         options: { key?: keyof T } | keyof T,

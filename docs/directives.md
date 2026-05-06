@@ -9,17 +9,21 @@ Bunnix provides two rendering directives: `Show` and `ForEach`.
 
 ## Show
 
-Use `Show` for conditional rendering. Pass a function to avoid evaluating heavy content while hidden.
+Use `Show` for conditional rendering. Pass a function to avoid evaluating heavy content while hidden. When you pass a render function, Bunnix also passes the current truthy state value into that function.
 
 ```javascript
 import Bunnix, { Show } from '@bunnix/core';
 
-const isVisible = Bunnix.useState(false);
+const selectedUser = Bunnix.useState(null);
 
 const Panel = () => (
     Bunnix('div', [
-        Show(isVisible, () => Bunnix('p', 'Visible')),
-        Bunnix('button', { click: () => isVisible.set(!isVisible.get()) }, 'Toggle')
+        Show(selectedUser, (user) =>
+            Bunnix('p', `Selected: ${user.name}`)
+        ),
+        Bunnix('button', {
+            click: () => selectedUser.set({ id: 1, name: 'Avery' })
+        }, 'Select User')
     ])
 );
 ```
