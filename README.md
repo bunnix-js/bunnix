@@ -130,6 +130,7 @@ document.body.appendChild(node);
 
 - Published documentation: https://bunnix-js.github.io/bunnix/
 - Core framework: `src/README.md`
+- Release staging and manual npm approval: [Publishing](docs/publishing.md)
 
 ## License
 
