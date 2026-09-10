@@ -135,3 +135,19 @@ document.body.appendChild(node);
 
 
 ISC
+
+## TypeScript API
+
+Import constructors as `useState` and `useEffect`. `State` is a type-only named export; the constructor aliases are `Bunnix.State` and `Bunnix.Effect`.
+
+```typescript
+import Bunnix, { useState, useMemo, useRef } from '@bunnix/core';
+import type { State } from '@bunnix/core';
+
+const count: State<number> = useState(0);
+const label = useMemo([count, 'Count'], (value, prefix) => `${prefix}: ${value}`);
+const inputRef = useRef<HTMLInputElement>(); // Initially null
+const unsubscribe = inputRef.subscribe((node) => node?.focus());
+```
+
+`useMemo` accepts mixed state and plain dependencies, including readonly computed states and reactive refs. Only state-like dependencies trigger updates. Refs accept initial values and expose `current`, `get()`, and `subscribe()`; see the ref documentation for timing and manual-assignment behavior.
