@@ -1,6 +1,6 @@
 {
     "name": "@bunnix/core",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "description": "Bunnix: ultra-lightweight reactive UI framework with keyed list rendering",
     "license": "ISC",
     "author": "@bunnix",
@@ -34,6 +34,7 @@
         "test": "node --test --import ./tests/setup-dom.mjs"
     },
     "devDependencies": {
-        "jsdom": "^26.0.0"
+        "jsdom": "^26.0.0",
+        "typescript": "^7.0.2"
     }
 }

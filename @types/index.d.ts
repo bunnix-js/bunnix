@@ -17,15 +17,24 @@ export interface ReadonlyState<T> {
     map<R>(fn: (value: T) => R): ReadonlyState<R>;
 }
 
-export function State<T>(value: T): State<T>;
+export interface StateSource<T> {
+    get(): T;
+    subscribe(callback: (value: T) => void): () => void;
+}
 
-export function Effect(
+export interface Ref<T> extends StateSource<T> {
+    current: T;
+}
+
+export function useState<T>(value: T): State<T>;
+
+export function useEffect(
     callback: (val?: any) => void | (() => void),
-    dependencies?: State<any> | Array<State<any> | any>
+    dependencies?: StateSource<any> | Array<StateSource<any>>
 ): () => void;
 
 export function Compute<T>(
-    deps: State<any> | Array<State<any>>,
+    deps: StateSource<any> | readonly unknown[],
     compute: (...values: any[]) => T
 ): ReadonlyState<T>;
 
@@ -40,13 +49,10 @@ export type VNode = {
 export interface BunnixFactory {
     (tag: any, propsOrChildren?: any, ...children: any[]): VNode;
 
-    useState<T>(initialValue: T): State<T>;
-    useEffect(
-        callback: (val?: any) => void | (() => void),
-        dependencies?: State<any> | Array<State<any> | any>
-    ): () => void;
-    useMemo<T>(deps: State<any> | Array<State<any>>, compute: (...values: any[]) => T): ReadonlyState<T>;
-    useRef<T = any>(): { current: T };
+    useState: typeof useState;
+    useEffect: typeof useEffect;
+    useMemo: typeof Compute;
+    useRef: typeof useRef;
     render(component: any, container: Element): void;
     toDOM(element: any, svgContext?: boolean): Node;
     whenReady(callback: () => void): void;
@@ -56,10 +62,10 @@ export interface BunnixFactory {
         options: { key?: keyof T } | keyof T,
         render: (item: T, index: number) => any
     ): any;
-    State: typeof State;
-    Effect: typeof Effect;
+    State: typeof useState;
+    Effect: typeof useEffect;
     Compute: typeof Compute;
-    Ref: () => { current: any };
+    Ref: typeof useRef;
     /** Dynamic tag factory (e.g., Bunnix.div(...)) */
     [tag: string]: any;
 }
@@ -67,10 +73,9 @@ export interface BunnixFactory {
 export const Bunnix: BunnixFactory;
 export default Bunnix;
 
-export const useState: typeof State;
-export const useEffect: typeof Effect;
 export const useMemo: typeof Compute;
-export const useRef: <T = any>() => { current: T };
+export function useRef<T = null>(): Ref<T | null>;
+export function useRef<T>(initialValue: T): Ref<Exclude<T, undefined> | (undefined extends T ? null : never)>;
 export const whenReady: (callback: () => void) => void;
 export const render: (component: any, container: Element) => void;
 export const Show: BunnixFactory['Show'];
