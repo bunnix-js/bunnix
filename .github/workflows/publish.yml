@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Stage npm package
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test-and-publish:
+  test-and-stage:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,29 +15,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           registry-url: https://registry.npmjs.org/
+
+      - name: Install npm with staged publishing support
+        run: npm install --global npm@11.15.0
 
       - run: npm ci
       - run: npm test
-      - run: npm pack
 
-      - name: Check npm version
-        id: version_check
+      - name: Stage and verify current package version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          LOCAL_VERSION=$(node -p "require('./package.json').version")
-          REMOTE_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "")
-          if [ "$LOCAL_VERSION" = "$REMOTE_VERSION" ]; then
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "Version $LOCAL_VERSION already published. Skipping."
-          else
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - run: npm publish --access public
-        if: steps.version_check.outputs.publish == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node .github/scripts/stage-package.mjs

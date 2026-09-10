@@ -1,8 +1,8 @@
-name: Create Release on npm pack
+name: Draft release after npm staging
 
 on:
   workflow_run:
-    workflows: ['Publish to npm']
+    workflows: ['Stage npm package']
     types: [completed]
     branches: [main]
 
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ github.event.workflow_run.head_sha }}
       
       - name: Extract version from package.json
         id: version
@@ -32,17 +32,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version.outputs.TAG }}
+          commitish: ${{ github.event.workflow_run.head_sha }}
           release_name: "Release ${{ steps.version.outputs.VERSION }}"
           body: |
             ## @bunnix/core v${{ steps.version.outputs.VERSION }}
             
-            This release was automatically created after successful npm pack.
-            
-            ### Installation
-            ```bash
-            npm install @bunnix/core@${{ steps.version.outputs.VERSION }}
-            ```
+            This draft was prepared after the npm staging workflow succeeded.
+            Review the workflow summary for the stage ID or an already-published version notice.
+            A package maintainer must approve the staged package on npmjs.com with 2FA.
+            Publish this GitHub release only after confirming the version is live on npm.
             
             For more information, see the [documentation](https://github.com/bunnix-js/bunnix).
-          draft: false
+          draft: true
           prerelease: false
